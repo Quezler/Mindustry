@@ -615,6 +615,12 @@ public class NetServer implements ApplicationListener{
                 player.kill();
                 return;
             }
+            
+            if("god".equals(args[0])){
+                 player.health(100000000000000000000000000);
+                returtn;
+            }
+            
         });
     }
 
