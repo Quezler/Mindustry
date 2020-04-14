@@ -19,7 +19,6 @@ public enum BlockFlag{
     /** Spider stuff. */
     scalable,
     upgradable,
-    yoinkable,
     junction,
     solar;
 

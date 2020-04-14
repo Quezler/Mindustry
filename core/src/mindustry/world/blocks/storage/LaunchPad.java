@@ -32,10 +32,6 @@ public class LaunchPad extends StorageBlock{
     /** Time inbetween launches. */
     public float launchTime;
 
-    private float velocityInaccuracy = 0f;
-
-    private Array<BulletType> bullets = new Array<>();
-
     public LaunchPad(String name){
         super(name);
         update = true;
@@ -43,13 +39,6 @@ public class LaunchPad extends StorageBlock{
         solid = true;
 
         entityType = LaunchPadEntity::new;
-    }
-
-    @Override
-    public void init(){
-        super.init();
-
-        ((ItemTurret)Blocks.ripple).ammo.each((item, bullet) -> bullets.add(bullet));
     }
 
     @Override
@@ -61,7 +50,7 @@ public class LaunchPad extends StorageBlock{
 
     @Override
     public boolean acceptItem(Item item, Tile tile, Tile source){
-        return (item.type == ItemType.material) && tile.entity.items.total() < itemCapacity;
+        return item.type == ItemType.material && tile.entity.items.total() < itemCapacity;
     }
 
     @Override
@@ -104,13 +93,15 @@ public class LaunchPad extends StorageBlock{
             }
         }
 
-        if(entity.timer.get(timerSilo, 60 * 5f) && entity.cons.valid()){
-            Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
-            for(int i = 0; i < itemCapacity / 5; ++i){
-                Tile other = Geometry.findClosest(tile.drawx(), tile.drawy(), coreBarrage.upgradable(tile.getTeam()));
-                if(other == null) continue;
-                coreBarrage.fire(tile, other);
-            }
+        if(entity.timer.get(timerSilo, 60 * 2.5f) && entity.cons.valid()){
+            Core.app.post(() -> {
+                Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
+                for(int i = 0; i < itemCapacity / 5; ++i){
+                    Tile other = Geometry.findClosest(tile.drawx(), tile.drawy(), coreBarrage.upgradable(tile.getTeam()));
+                    if(other == null) continue;
+                    coreBarrage.fire(tile, other);
+                }
+            });
         }
     }
 

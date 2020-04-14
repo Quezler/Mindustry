@@ -27,7 +27,8 @@ public class Team implements Comparable<Team>{
         crux = new Team(2, "crux", Color.valueOf("e82d2d")),
         green = new Team(3, "green", Color.valueOf("4dd98b")),
         purple = new Team(4, "purple", Color.valueOf("9a4bdf")),
-        blue = new Team(5, "blue", Color.royal.cpy());
+        blue = new Team(5, "blue", Color.royal.cpy()),
+        cute = blue;
 
     static{
         Mathf.random.setSeed(8);

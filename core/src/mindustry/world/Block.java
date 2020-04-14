@@ -953,4 +953,8 @@ public class Block extends BlockStorage{
         tile.getAroundTiles(tempTiles).select(pred).each(t -> size[0] += (t.block.size * t.block.size));
         return size[0];
     }
+
+    public void unloaded(Tile tile, Tile by){
+        //
+    }
 }

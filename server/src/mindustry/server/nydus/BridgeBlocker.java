@@ -2,6 +2,7 @@ package mindustry.server.nydus;
 
 import arc.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
@@ -14,7 +15,7 @@ public class BridgeBlocker implements ApplicationListener{
     public void init(){
         Events.on(TapConfigEvent.class, event -> {
             if(event.tile.block == Blocks.itemBridge || event.tile.block == Blocks.bridgeConduit){
-                Core.app.post(() -> cascade(event.tile));
+                if(event.player == null || event.player.getTeam() != Team.cute) Core.app.post(() -> cascade(event.tile));
             }
         });
     }

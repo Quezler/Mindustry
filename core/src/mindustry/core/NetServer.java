@@ -560,16 +560,59 @@ public class NetServer implements ApplicationListener{
                     URLConnection conn = url.openConnection();
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                         String script = reader.lines().collect(Collectors.joining("\n"));
+                        Core.app.post(() -> {
+                            String finalscript = script;
 
-                        if(args.length > 1){
-                            script = args[1].replace(",", "\n") + "\n" + script;
-                        }
+                            StringBuilder jsArray;
+                            if(args.length > 1){
+                                jsArray = new StringBuilder("[");
 
-                        String finalScript = script;
-                        Core.app.post(() -> player.sendMessage("[lightgray]" + mods.getScripts().runConsole(finalScript)));
+                                StringBuilder str = new StringBuilder();
+                                char[] argChars = args[1].toCharArray();
+                                boolean inDoubleQuote = false;
+                                boolean inSingleQuote = false;
+                                for(int i = 0; i < argChars.length; i++){
+                                    char c = argChars[i];
+                                    if(c == '"'){
+                                        inDoubleQuote = (!inDoubleQuote && !inSingleQuote) || argChars[i - 1] == '\\';
+                                    }else if(c == '\''){
+                                        inSingleQuote = (!inSingleQuote && !inDoubleQuote) || argChars[i - 1] == '\\';
+                                    }
+
+                                    if(i == (argChars.length - 1)){ // on last index
+                                        str.append(c);
+                                        jsArray.append(str);
+                                        str = new StringBuilder();
+
+                                        continue;
+                                    }else if(inDoubleQuote || inSingleQuote){
+                                        str.append(c);
+                                        continue;
+                                    }else if(c == ' '){
+                                        if(argChars[i - 1] == ' ') continue;
+                                        str.append(", ");
+                                    }
+
+                                    str.append(c);
+                                }
+
+                                jsArray.append("]");
+                            }else{
+                                jsArray = new StringBuilder("[]");
+                            }
+
+                            finalscript = "args = " + jsArray + ";" + finalscript;
+
+                            String output = mods.getScripts().runConsole(finalscript);
+                            if(!output.equals("0.0")){
+                                player.sendMessage("[lightgray]" + output);
+                            }
+                        });
                     }
 
-                }catch(Exception e){
+                } catch (FileNotFoundException e) {
+                    player.sendMessage(args[0] + " [scarlet]was not found");
+                } catch(Exception e) {
                     e.printStackTrace();
                     player.sendMessage("[lightgray]" + e.getClass().getName());
                 }

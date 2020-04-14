@@ -55,8 +55,6 @@ public class Drill extends Block{
     public TextureRegion rotatorRegion;
     public TextureRegion topRegion;
 
-    private final int timerYoink = timers++;
-
     public Drill(String name){
         super(name);
         update = true;
@@ -295,24 +293,6 @@ public class Drill extends Block{
                 entity.items.add(entity.dominantItem, 5);
                 netServer.titanic.add(tile);
             }
-        }
-    }
-
-    @Override
-    public void placed(Tile tile){
-        super.placed(tile);
-        DrillEntity entity = tile.ent();
-
-        update(tile);
-
-        if(tile.block == Blocks.pneumaticDrill && entity.dominantItem != Items.coal){
-            Core.app.post(() -> {
-                Tile other = indexer.getAllied(tile.getTeam(), BlockFlag.yoinkable).select(t -> t.<DrillEntity>ent().dominantItem == Items.coal && !coreBarrage.pending.containsKey(t)).asArray().random();
-                if(other != null){
-                    coreBarrage.fire(tile, other);
-                    tile.constructNet(Blocks.mechanicalDrill, tile.getTeam(), tile.rotation());
-                }
-            });
         }
     }
 

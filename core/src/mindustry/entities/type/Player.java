@@ -29,7 +29,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import mindustry.world.meta.*;
 
 import java.io.*;
 
@@ -76,7 +75,6 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
     private boolean moved;
 
     public ObjectMap<Tile, Integer> syncbeacons = new ObjectMap<>();
-    protected Array<Tile> tempTiles = new Array<>();
 
     public int idle = 0;
 
@@ -542,21 +540,6 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
                 postSync();
             }
         });
-
-        if(item.amount > 0 && item.item != null && item.item.type == ItemType.material && itemtime >= 0.9f && getClosestCore() != null && velocity.isZero(0.01f)){
-            if(getClosestCore().dst(this) <= mineTransferRange){
-                Call.transferItemTo(item.item, item.amount, x, y, getClosestCore().tile);
-                clearItem();
-            }else{
-                Player proxy = (Player)Units.closest(team, x, y, mineTransferRange, u -> u instanceof Player && u != this && u.acceptsItem(item.item) && u.getClosestCore().dst(u) < getClosestCore().dst(this) && velocity.isZero(0.01f));
-                if(proxy != null){
-                    proxy.addItem(item.item, item.amount-1);
-                    Call.transferItemToUnit(item.item, x, y, proxy);
-                    proxy.itemtime = 0f;
-                    clearItem();
-                }
-            }
-        }
 
         boostHeat = Mathf.lerpDelta(boostHeat, (tile != null && tile.solid()) || (isBoosting && ((!movement.isZero() && moved) || !isLocal)) ? 1f : 0f, 0.08f);
         shootHeat = Mathf.lerpDelta(shootHeat, isShooting() ? 1f : 0f, 0.06f);
