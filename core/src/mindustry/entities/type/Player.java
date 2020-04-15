@@ -29,6 +29,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.units.*;
 
 import java.io.*;
 
@@ -540,6 +541,10 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
                 postSync();
             }
         });
+
+        if(lastSpawner.isValid() && lastSpawner.getTile().block().hasPower){
+            if(lastSpawner.getTile().entity.power.status < 1f) applyEffect(StatusEffects.tarred, 60);
+        }
 
         boostHeat = Mathf.lerpDelta(boostHeat, (tile != null && tile.solid()) || (isBoosting && ((!movement.isZero() && moved) || !isLocal)) ? 1f : 0f, 0.08f);
         shootHeat = Mathf.lerpDelta(shootHeat, isShooting() ? 1f : 0f, 0.06f);

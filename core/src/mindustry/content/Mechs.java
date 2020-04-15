@@ -373,6 +373,6 @@ public class Mechs implements ContentList{
             }
         };
 
-        starter = tau;
+        starter = dart;
     }
 }
