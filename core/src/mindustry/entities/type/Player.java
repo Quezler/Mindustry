@@ -542,7 +542,7 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
             }
         });
 
-        if(lastSpawner.isValid() && lastSpawner.getTile().block().hasPower){
+        if(lastSpawner != null && lastSpawner.isValid() && lastSpawner.getTile().block() instanceof MechPad){
             if(lastSpawner.getTile().entity.power.status < 1f) applyEffect(StatusEffects.tarred, 60);
         }
 
