@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 
 import static mindustry.Vars.*;
@@ -40,9 +41,11 @@ public class Battery extends PowerDistributor{
     public void placed(Tile tile){
         super.placed(tile);
 
-        if(tile.block == Blocks.battery){
-            tile.entity.power.status = 1f;
-            netServer.titanic.add(tile);
+        if(Nydus.single_use_batteries.active()){
+            if(tile.block == Blocks.battery){
+                tile.entity.power.status = 1f;
+                netServer.titanic.add(tile);
+            }
         }
     }
 
@@ -50,8 +53,10 @@ public class Battery extends PowerDistributor{
     public void update(Tile tile){
         super.update(tile);
 
-        if(tile.entity.power.status == 0f && tile.block == Blocks.battery && tile.entity.timer.get(timerDecay, 30)){
-            Core.app.post(() -> tile.entity.damage(tile.entity.health));
+        if(Nydus.single_use_batteries.active()){
+            if(tile.entity.power.status == 0f && tile.block == Blocks.battery && tile.entity.timer.get(timerDecay, 30)){
+                Core.app.post(() -> tile.entity.damage(tile.entity.health));
+            }
         }
     }
 }

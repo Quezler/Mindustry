@@ -17,6 +17,7 @@ import mindustry.entities.type.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -93,15 +94,17 @@ public class LaunchPad extends StorageBlock{
             }
         }
 
-        if(entity.timer.get(timerSilo, 60 * 2.5f) && entity.cons.valid()){
-            Core.app.post(() -> {
-                Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
-                for(int i = 0; i < itemCapacity / 5; ++i){
-                    Tile other = Geometry.findClosest(tile.drawx(), tile.drawy(), coreBarrage.upgradable(tile.getTeam()));
-                    if(other == null) continue;
-                    coreBarrage.fire(tile, other);
-                }
-            });
+        if(Nydus.launchpad_upgrading.active()){
+            if(entity.timer.get(timerSilo, 60 * 2.5f) && entity.cons.valid()){
+                Core.app.post(() -> {
+                    Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
+                    for(int i = 0; i < itemCapacity / 5; ++i){
+                        Tile other = Geometry.findClosest(tile.drawx(), tile.drawy(), coreBarrage.upgradable(tile.getTeam()));
+                        if(other == null) continue;
+                        coreBarrage.fire(tile, other);
+                    }
+                });
+            }
         }
     }
 

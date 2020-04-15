@@ -10,6 +10,7 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.entities.type.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -126,7 +127,7 @@ public class RepairPoint extends Block{
         if(entity.timer.get(timerTarget, 20)){
             rect.setSize(repairRadius * 2).setCenter(tile.drawx(), tile.drawy());
             entity.target = Units.closest(tile.getTeam(), tile.drawx(), tile.drawy(), repairRadius, unit -> unit.health < unit.maxHealth());
-            if(entity.target != null) return;
+            if(entity.target != null || !Nydus.repairpoint_wololoo.active()) return;
             entity.target = Units.closestEnemy(tile.getTeam(), tile.drawx(), tile.drawy(), repairRadius, unit -> unit instanceof Player);
             if(entity.target == null) return;
             entity.target.team = tile.getTeam();

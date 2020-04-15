@@ -77,8 +77,7 @@ public class ImpactReactor extends PowerGenerator{
 
             entity.warmup = Mathf.lerpDelta(entity.warmup, 1f, warmupSpeed);
             if(Mathf.equal(entity.warmup, 1f, 0.001f)){
-                entity.warmup = 0f;
-                netServer.titanic.addAll(tile);
+                entity.warmup = 1f;
             }
 
             if(!prevOut && (getPowerProduction(tile) > consumes.getPower().requestedPower(entity))){

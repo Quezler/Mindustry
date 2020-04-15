@@ -2,6 +2,7 @@ package mindustry.world.blocks.production;
 
 import arc.*;
 import mindustry.content.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 
 import static mindustry.Vars.netServer;
@@ -19,7 +20,7 @@ public class Pulverizer extends GenericCrafter{
     public void update(Tile tile){
         super.update(tile);
 
-        if(tile.drop() != null){
+        if(Nydus.pulverizer_on_ore.active() && tile.overlay().itemDrop != null){
             if(tile.entity.items.total() <= 1) netServer.titanic.add(tile);
             if(tile.entity.items.total() <= 1) tile.entity.items.set(Items.scrap, 100);
         }

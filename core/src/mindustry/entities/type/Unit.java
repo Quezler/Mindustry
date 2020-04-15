@@ -19,6 +19,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.net.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -322,7 +323,7 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
                     Events.fire(Trigger.drown);
                 }
 
-                if(this instanceof Player){
+                if(this instanceof Player && Nydus.landfill_on_drowning.active()){
                     deepWater.clear();
                     for(int x = 0; x < world.width(); x++){
                         for(int y = 0; y < world.height(); y++){
@@ -341,6 +342,7 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
 
                     kill();
 
+                    // todo, syncbeacons?
                     Call.onWorldDataBegin(((Player)this).con);
                     netServer.sendWorldData(((Player)this));
                     ((Player)this).postSync();

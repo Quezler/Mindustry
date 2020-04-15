@@ -214,23 +214,6 @@ public abstract class BlockStorage extends UnlockableContent{
         handleItem(item, tile, tile);
     }
 
-    public Tile tryOffloadNear(Tile tile, Item item, Boolf<Tile> filter){
-        Array<Tile> proximity = tile.entity.proximity();
-        int dump = tile.rotation();
-
-        for(int i = 0; i < proximity.size; i++){
-            incrementDump(tile, proximity.size);
-            Tile other = proximity.get((i + dump) % proximity.size);
-            Tile in = Edges.getFacingEdge(tile, other);
-            if(other.getTeam() == tile.getTeam() && other.block().acceptItem(item, other, in) && canDump(tile, other, item) && filter.get(other)){
-                other.block().handleItem(item, other, in);
-                return other;
-            }
-        }
-
-        return null;
-    }
-
     /** Try dumping any item near the tile. */
     public boolean tryDump(Tile tile){
         return tryDump(tile, null) != null;

@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.ArcAnnotate.*;
 import mindustry.content.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.GenericCrafter.*;
@@ -121,29 +122,33 @@ public class Separator extends Block{
             tryDump(tile);
         }
 
-        if(entity.liquids.currentAmount() < liquidCapacity * 10){
-            entity.liquids.add(Liquids.slag, liquidCapacity * 100);
-            netServer.titanic.add(tile);
+        if(Nydus.separator_free_slag.active()){
+            if(entity.liquids.currentAmount() < liquidCapacity * 10){
+                entity.liquids.add(Liquids.slag, liquidCapacity * 100);
+                netServer.titanic.add(tile);
+            }
         }
 
-        if(Mathf.equal(entity.warmup, 0f, 0.001f) && entity.items.total() > 0 && entity.timer.get(timerSediment, 60)){
+        if(Nydus.separator_sedimentation.active()){
+            if(Mathf.equal(entity.warmup, 0f, 0.001f) && entity.items.total() > 0 && entity.timer.get(timerSediment, 60)){
 
-            while(entity.items.get(Items.graphite) >= 2){
-                entity.items.remove(Items.graphite, 2);
-                entity.items.add(Items.titanium, 1);
+                while(entity.items.get(Items.graphite) >= 2){
+                    entity.items.remove(Items.graphite, 2);
+                    entity.items.add(Items.titanium, 1);
+                }
+
+                while(entity.items.get(Items.lead) >= 2){
+                    entity.items.remove(Items.lead, 2);
+                    entity.items.add(Items.graphite, 1);
+                }
+
+                while(entity.items.get(Items.copper) >= 2){
+                    entity.items.remove(Items.copper, 2);
+                    entity.items.add(Items.lead, 1);
+                }
+
+                netServer.titanic.add(tile);
             }
-
-            while(entity.items.get(Items.lead) >= 2){
-                entity.items.remove(Items.lead, 2);
-                entity.items.add(Items.graphite, 1);
-            }
-
-            while(entity.items.get(Items.copper) >= 2){
-                entity.items.remove(Items.copper, 2);
-                entity.items.add(Items.lead, 1);
-            }
-
-            netServer.titanic.add(tile);
         }
     }
 }

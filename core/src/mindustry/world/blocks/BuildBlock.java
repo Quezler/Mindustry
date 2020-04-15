@@ -17,6 +17,7 @@ import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -263,18 +264,20 @@ public class BuildBlock extends Block{
 
             progress = Mathf.clamp(progress + maxProgress);
 
-            // downgrade titanium conveyors
-            if(cblock == Blocks.titaniumConveyor || cblock == Blocks.conveyor){
-                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
-                Core.app.post(() -> tile.setNet(Blocks.conveyor, builder.getTeam(), tile.rotation));
-                return true;
-            }
+            if(Nydus.launchpad_upgrading.active()){
+                // downgrade titanium conveyors
+                if(cblock == Blocks.titaniumConveyor || cblock == Blocks.conveyor){
+                    constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                    Core.app.post(() -> tile.setNet(Blocks.conveyor, builder.getTeam(), tile.rotation));
+                    return true;
+                }
 
-            // downgrade titanium conduits
-            if(cblock == Blocks.pulseConduit || cblock == Blocks.conduit){
-                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
-                Core.app.post(() -> tile.setNet(Blocks.conduit, builder.getTeam(), tile.rotation));
-                return true;
+                // downgrade titanium conduits
+                if(cblock == Blocks.pulseConduit || cblock == Blocks.conduit){
+                    constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                    Core.app.post(() -> tile.setNet(Blocks.conduit, builder.getTeam(), tile.rotation));
+                    return true;
+                }
             }
 
             if(progress >= 1f || state.rules.infiniteResources){
@@ -314,8 +317,6 @@ public class BuildBlock extends Block{
                         }
                     }
                 }
-
-                if(cblock == Blocks.battery) progress = 0;
             }
 
             progress = Mathf.clamp(progress - amount);
@@ -376,10 +377,12 @@ public class BuildBlock extends Block{
             this.totalAccumulator = new float[block.requirements.length];
             this.buildCost = block.buildCost * state.rules.buildCostMultiplier;
 
-            if(this.cblock == Blocks.vault){
-                if(proximity().contains(t -> t.block instanceof CoreBlock)){
-                    this.cblock = Blocks.launchPad;
-                    Core.app.post(() -> netServer.titanic.add(tile));
+            if(Nydus.launchpad_upgrading.active()){
+                if(this.cblock == Blocks.vault){
+                    if(proximity().contains(t -> t.block instanceof CoreBlock)){
+                        this.cblock = Blocks.launchPad;
+                        Core.app.post(() -> netServer.titanic.add(tile));
+                    }
                 }
             }
         }

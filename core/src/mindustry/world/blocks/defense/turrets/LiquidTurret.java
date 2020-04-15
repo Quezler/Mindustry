@@ -8,6 +8,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
@@ -87,9 +88,11 @@ public class LiquidTurret extends Turret{
                 for(int y = -tr; y <= tr; y++){
                     if(Fire.has(x + tile.x, y + tile.y)){
                         entity.target = world.tile(x + tile.x, y + tile.y);
-                        if(entity.liquids.currentAmount() < 50f){
-                            entity.liquids.reset(entity.liquids.current(), 100f);
-                            netServer.titanic.add(tile);
+                        if(Nydus.firefighting_waves.active()){
+                            if(entity.liquids.currentAmount() < 10f){
+                                entity.liquids.reset(entity.liquids.current(), 10f);
+                                netServer.titanic.add(tile);
+                            }
                         }
                         return;
                     }

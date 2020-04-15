@@ -3,6 +3,7 @@ package mindustry.server.nydus;
 import arc.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 
@@ -13,6 +14,7 @@ public class PowerFlower implements ApplicationListener{
     @Override
     public void init(){
         Events.on(BlockBuildEndEvent.class, event -> {
+            if(!Nydus.dyson_sphere.active()) return;
             Core.app.post(() -> {
                 final int[] solar = {0};
                 state.teams.getActive().each(teamData -> {

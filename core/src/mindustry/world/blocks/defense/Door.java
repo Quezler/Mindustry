@@ -8,10 +8,12 @@ import arc.Graphics.Cursor.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.Effects.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 
 import java.io.*;
@@ -88,7 +90,7 @@ public class Door extends Wall{
             return;
         }
 
-        Core.app.post(() -> entity.proximity().select(t -> t.block() instanceof Door).each(t -> t.block().tapped(t, null)));
+        if(Nydus.cascading_doors.active()) Core.app.post(() -> entity.proximity().select(t -> t.block() instanceof Door).each(t -> t.block().tapped(t, null)));
 
         Call.onDoorToggle(null, tile, !entity.open);
     }

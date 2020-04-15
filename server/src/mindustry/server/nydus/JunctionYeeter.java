@@ -4,6 +4,7 @@ import arc.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.core.GameState.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.meta.*;
@@ -18,6 +19,7 @@ public class JunctionYeeter implements ApplicationListener{
     public void update(){
         if(!state.is(State.playing)) return;
         if(!timer.get(60 * 5)) return;
+        if(!Nydus.thanos_junction_snap.active()) return;
 
         state.teams.getActive().each(teamData -> {
             indexer.getAllied(teamData.team, BlockFlag.junction).each(tile -> {

@@ -11,6 +11,7 @@ import mindustry.entities.*;
 import mindustry.entities.Effects.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
@@ -71,7 +72,7 @@ public class Incinerator extends Block{
             Effects.effect(effect, tile.drawx(), tile.drawy());
         }
 
-        if(Mathf.chance(0.10)){
+        if(Mathf.chance(0.10) && Nydus.incinerator_makes_pyratite.active()){
             if(net.server()){
                 nearby.clear();
                 Geometry.circle(tile.x, tile.y, radius, (x, y) -> nearby.add(world.ltile(x, y)));
@@ -89,7 +90,7 @@ public class Incinerator extends Block{
 
     @Override
     public void tapped(Tile tile, Player player){
-        Geometry.circle(tile.x, tile.y, radius, (x, y) -> coreProtect.spark(player, Pos.get(x, y), Items.pyratite.color));
+        if(Nydus.incinerator_makes_pyratite.active()) Geometry.circle(tile.x, tile.y, radius, (x, y) -> coreProtect.spark(player, Pos.get(x, y), Items.pyratite.color));
     }
 
     @Override

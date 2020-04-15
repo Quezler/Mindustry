@@ -7,6 +7,7 @@ import mindustry.core.GameState.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -35,6 +36,8 @@ public class BlockUpscaler implements ApplicationListener{
     }
 
     private void trigger(Team team){
+        if(!Nydus.block_merging.active()) return;
+
         indexer.getAllied(team, BlockFlag.scalable).each(tile -> {
 
             if(tile == null) return;

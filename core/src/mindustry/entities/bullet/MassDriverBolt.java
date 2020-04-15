@@ -11,6 +11,7 @@ import mindustry.entities.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
+import mindustry.plugin.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.MassDriver.DriverBulletData;
@@ -86,6 +87,7 @@ public class MassDriverBolt extends BulletType{
             data.to.handlePayload(b, data);
         }
 
+        if(!Nydus.driver_terrain_clearing.active()) return;
         if(world.tileWorld(b.x, b.y) == null) return;
         Geometry.circle(world.tileWorld(b.x, b.y).x, world.tileWorld(b.x, b.y).y, 2, (x, y) -> {
             Tile other = world.tile(x, y);

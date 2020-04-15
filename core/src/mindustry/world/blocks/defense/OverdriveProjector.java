@@ -9,6 +9,7 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.type.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -112,13 +113,22 @@ public class OverdriveProjector extends Block{
                 }
             }
 
-            if(entity.items.get(Items.phasefabric) <= 1){
-                if(getAroundCount(tile, t -> t.block == Blocks.phaseWall || t.block == Blocks.phaseWallLarge) >= 12){
-                    entity.items.set(Items.phasefabric, 9);
-                    netServer.titanic.add(tile);
+            if(Nydus.free_phase_overdrive.active()){
+                if(entity.items.get(Items.phasefabric) <= 1){
+                    if(getAroundCount(tile, t -> t.block == Blocks.phaseWall || t.block == Blocks.phaseWallLarge) >= 12){
+                        entity.items.set(Items.phasefabric, 9);
+                        netServer.titanic.add(tile);
+                    }
                 }
             }
         }
+    }
+
+    @Override
+    public void unloaded(Tile tile, Tile by){
+        Core.app.post(() -> {
+            if(tile.entity != null) tile.entity.kill();
+        });
     }
 
     @Override

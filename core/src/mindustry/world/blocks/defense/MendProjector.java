@@ -6,7 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import arc.util.*;
-import mindustry.content.*;
+import mindustry.content.Fx;
 import mindustry.entities.Effects;
 import mindustry.entities.type.TileEntity;
 import mindustry.graphics.*;

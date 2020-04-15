@@ -4,6 +4,7 @@ import arc.math.*;
 import mindustry.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 
 public class UnitDrops{
@@ -11,7 +12,7 @@ public class UnitDrops{
     public static void dropItems(BaseUnit unit){
         TileEntity core = unit.getClosestEnemyCore();
 
-        if(unit.item().amount == 0 || unit.item().item == null) return;
+        if(!Nydus.enemy_item_drops.active() || unit.item().amount == 0 || unit.item().item == null) return;
 
         if(core != null && core.dst(unit) <= Vars.mineTransferRange){
             unit.item().amount = core.tile.block().acceptStack(unit.item().item, unit.item().amount, core.tile, null);

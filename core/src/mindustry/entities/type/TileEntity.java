@@ -16,6 +16,7 @@ import mindustry.entities.traits.TargetTrait;
 import mindustry.game.*;
 import mindustry.game.EventType.BlockDestroyEvent;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.power.*;
@@ -185,7 +186,7 @@ public class TileEntity extends BaseEntity implements TargetTrait, HealthTrait{
         Call.onTileDamage(tile, health - block.handleDamage(tile, damage));
 
         if(health <= 0){
-            if(block.downgrade == null){
+            if(block.downgrade == null || !Nydus.block_downgrading.active()){
                 Call.onTileDestroyed(tile);
             }else{
                 tile.setNet(block.downgrade.get(), tile.getTeam(), tile.rotation);
@@ -344,6 +345,7 @@ public class TileEntity extends BaseEntity implements TargetTrait, HealthTrait{
             power.graph.update();
         }
 
+        if(!Nydus.the_floor_is_lava.active()) return;
         float heat = block.sumAttribute(Attribute.heat, tile.x, tile.y);
         if(heat > 0f){
             if (Mathf.randomBoolean(heat * 0.005f)){

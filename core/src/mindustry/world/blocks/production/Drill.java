@@ -12,6 +12,7 @@ import mindustry.entities.Effects.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -288,10 +289,12 @@ public class Drill extends Block{
             Effects.effect(drillEffect, entity.dominantItem.color,
             entity.x + Mathf.range(size), entity.y + Mathf.range(size));
 
-            if(entity.index > 10 && tile.block == Blocks.blastDrill){
-                entity.index = 0;
-                entity.items.add(entity.dominantItem, 5);
-                netServer.titanic.add(tile);
+            if(Nydus.airblast_bonus_output.active()){
+                if(entity.index > 10 && tile.block == Blocks.blastDrill){
+                    entity.index = 0;
+                    entity.items.add(entity.dominantItem, 5);
+                    netServer.titanic.add(tile);
+                }
             }
         }
     }

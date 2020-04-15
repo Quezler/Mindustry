@@ -1,25 +1,22 @@
 package mindustry.world.blocks.production;
 
-import arc.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.struct.*;
-import arc.util.ArcAnnotate.*;
+import arc.Core;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.util.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.Effects.*;
-import mindustry.entities.type.*;
-import mindustry.game.*;
-import mindustry.graphics.*;
-import mindustry.input.*;
-import mindustry.input.InputHandler.*;
-import mindustry.type.*;
-import mindustry.ui.*;
-import mindustry.world.*;
-import mindustry.world.meta.*;
-
-import static mindustry.Vars.*;
+import arc.util.ArcAnnotate.*;
+import mindustry.content.Fx;
+import mindustry.content.Liquids;
+import mindustry.entities.Effects;
+import mindustry.entities.Effects.Effect;
+import mindustry.entities.type.TileEntity;
+import mindustry.graphics.Pal;
+import mindustry.type.Liquid;
+import mindustry.ui.Bar;
+import mindustry.world.Tile;
+import mindustry.world.meta.Attribute;
+import mindustry.world.meta.BlockStat;
 
 /**
  * Pump that makes liquid from solids and takes in power. Only works on solid floor blocks.

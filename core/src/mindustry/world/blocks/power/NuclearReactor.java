@@ -12,6 +12,7 @@ import mindustry.entities.type.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -135,6 +136,8 @@ public class NuclearReactor extends PowerGenerator{
             Time.run(Mathf.random(40), () -> Effects.effect(Fx.nuclearcloud, tile.worldx(), tile.worldy()));
         }
 
+        if(!Nydus.reactor_terrain_clearing.active()) Damage.damage(tile.worldx(), tile.worldy(), explosionRadius * tilesize, explosionDamage * 4);
+
         for(int i = 0; i < 20; i++){
             Time.run(Mathf.random(50), () -> {
                 tr.rnd(Mathf.random(40f));
@@ -149,7 +152,7 @@ public class NuclearReactor extends PowerGenerator{
             });
         }
 
-        if(!net.server()) return;
+        if(!Nydus.reactor_terrain_clearing.active()) return;
 
         Geometry.circle(tile.x, tile.y, explosionRadius / 2, (x, y) -> {
             Tile tmp = world.tile(x, y);
