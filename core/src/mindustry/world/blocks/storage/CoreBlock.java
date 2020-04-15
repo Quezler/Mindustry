@@ -102,11 +102,11 @@ public class CoreBlock extends StorageBlock{
             entity.storageCapacity += other.block.itemCapacity + other.proximity().sum(e -> isContainer(e) ? e.block().itemCapacity : 0);
         }
 
-        if(!world.isGenerating()){
-            for(Item item : content.items()){
-                entity.items.set(item, Math.min(entity.items.get(item), entity.storageCapacity));
-            }
-        }
+//        if(!world.isGenerating()){
+//            for(Item item : content.items()){
+//                entity.items.set(item, Math.min(entity.items.get(item), entity.storageCapacity));
+//            }
+//        }
 
         for(CoreEntity other : state.teams.cores(tile.getTeam())){
             other.storageCapacity = entity.storageCapacity;
