@@ -1,6 +1,7 @@
 package mindustry.plugin;
 
 import arc.func.*;
+import mindustry.ui.*;
 
 import static mindustry.Vars.*;
 
@@ -34,15 +35,14 @@ public enum Nydus{
 
     duo_router(() -> true, "#duo turns into #router when attempting to shoot"),
     firefighting_waves(() -> true, "#wave consumes no liquid to fight fires"),
-    combustible_combustion(() -> true, "#conbustion-generator combusts when fed #coal"),
+    combustible_combustion(() -> true, "#combustion-generator combusts when fed #coal"),
     dyson_sphere(() -> true, "#solar-panel gives more power when there are more of em"),
     repairpoint_wololoo(() -> true, "#repair-point switches your team on-demand"),
     portal_bridge_builder(() -> true, "#bridge-conveyor & #bridge-conduit cannot chain"),
-    thanos_junction_snap(() -> true, "#junction gets removed when nothing crosses it"),
-
-    secret(() -> true, "#null");
+    thanos_junction_snap(() -> true, "#junction gets removed when nothing crosses it");
 
     private final Boolp active;
+    public String description;
 
     public boolean active(){
         if(!net.server()) return false;
@@ -51,6 +51,12 @@ public enum Nydus{
 
     Nydus(Boolp active, String description){
         this.active = active;
-    }
+        this.description = description;
 
+        for(String word : description.split(" ")){
+            if(word.startsWith("#")){
+                this.description = this.description.replace(word, "" + (char)Fonts.getUnicode(word.substring(1)));
+            }
+        }
+    }
 }

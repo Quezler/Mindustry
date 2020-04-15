@@ -24,6 +24,7 @@ import mindustry.gen.*;
 import mindustry.net.*;
 import mindustry.net.Administration.*;
 import mindustry.net.Packets.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
@@ -660,6 +661,14 @@ public class NetServer implements ApplicationListener{
                 player.kill();
                 return;
             }
+        });
+
+        clientCommands.<Player>register("readme", "README.md", (args, player) -> {
+
+            player.sendMessage(Config.name.string().replace("[goldenrod]Nydus Network ", "") + " [goldenrod]" + Iconc.down);
+            for(Nydus modifier : Nydus.values()) player.sendMessage(modifier.description);
+            player.sendMessage(Config.name.string().replace("[goldenrod]Nydus Network ", "") + " [goldenrod]" + Iconc.up);
+
         });
     }
 
