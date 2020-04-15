@@ -72,7 +72,7 @@ public class Incinerator extends Block{
             Effects.effect(effect, tile.drawx(), tile.drawy());
         }
 
-        if(Mathf.chance(0.05f + item.flammability + item.explosiveness) && Nydus.incinerator_makes_pyratite.active()){
+        if(Mathf.chance(0.05f + (item.flammability + item.explosiveness) / 2) && Nydus.incinerator_makes_pyratite.active()){
             if(net.server()){
                 nearby.clear();
                 Geometry.circle(tile.x, tile.y, radius, (x, y) -> nearby.add(world.ltile(x, y)));
