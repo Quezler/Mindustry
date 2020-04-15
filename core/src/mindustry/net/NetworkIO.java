@@ -27,7 +27,7 @@ public class NetworkIO{
 
             tags.clear();
             world.getMap().tags.each((key, value) -> tags.put(key, value));
-            tags.put("name", "Modern Caldera");
+            tags.put("name", "\u200Bmindustry.nydus.app");
 
             SaveIO.getSaveWriter().writeStringMap(stream, tags);
 
