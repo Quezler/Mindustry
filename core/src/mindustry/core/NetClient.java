@@ -25,6 +25,7 @@ import mindustry.net.Net.*;
 import mindustry.net.*;
 import mindustry.net.Packets.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.modules.*;
 
@@ -179,8 +180,13 @@ public class NetClient implements ApplicationListener{
                 sendMessage(message, colorizeName(player.id, player.name), player);
             }
 
+            String tolog = message;
+            for(char i : message.toCharArray()){
+                if(Fonts.unicodeIcons.containsValue(i)) tolog = tolog.replace("" + i, "#" + Fonts.unicodeIcons.findKey(i));
+            }
+
             //server console logging
-            Log.info("&y{0}: &lb{1}", player.name, message);
+            Log.info("&y{0}: &lb{1}", player.name, tolog);
 
             //invoke event for all clients but also locally
             //this is required so other clients get the correct name even if they don't know who's sending it yet
