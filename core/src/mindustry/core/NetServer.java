@@ -542,7 +542,7 @@ public class NetServer implements ApplicationListener{
             }
 
             scripter = player;
-            player.sendMessage("[lightgray]" + mods.getScripts().runConsole("me = Vars.scripter\n" + args[0]));
+            player.sendMessage("[lightgray]" + mods.getScripts().runConsole("me = Vars.scripter;" + args[0]));
         });
 
         clientCommands.<Player>register("ts", "<script> [arguments...]", "Run typed Javascript.", (args, player) -> {
