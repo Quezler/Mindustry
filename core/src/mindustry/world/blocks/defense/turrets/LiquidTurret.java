@@ -88,11 +88,9 @@ public class LiquidTurret extends Turret{
                 for(int y = -tr; y <= tr; y++){
                     if(Fire.has(x + tile.x, y + tile.y)){
                         entity.target = world.tile(x + tile.x, y + tile.y);
-                        if(Nydus.firefighting_waves.active()){
-                            if(entity.liquids.currentAmount() < 10f){
-                                entity.liquids.reset(entity.liquids.current(), 10f);
-                                netServer.titanic.add(tile);
-                            }
+                        if(entity.liquids.currentAmount() < 10f){
+                            entity.liquids.reset(entity.liquids.current(), 10f);
+                            netServer.titanic.add(tile);
                         }
                         return;
                     }

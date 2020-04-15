@@ -543,10 +543,8 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
             }
         });
 
-        if(Nydus.unpowered_mechpad_tarring.active()){
-            if(lastSpawner != null && lastSpawner.isValid() && lastSpawner.getTile().block() instanceof MechPad){
-                if(lastSpawner.getTile().entity.power.status < 1f) applyEffect(StatusEffects.tarred, 60);
-            }
+        if(lastSpawner != null && lastSpawner.isValid() && lastSpawner.getTile().block() instanceof MechPad){
+            if(lastSpawner.getTile().entity.power.status < 1f) applyEffect(StatusEffects.tarred, 60);
         }
 
         boostHeat = Mathf.lerpDelta(boostHeat, (tile != null && tile.solid()) || (isBoosting && ((!movement.isZero() && moved) || !isLocal)) ? 1f : 0f, 0.08f);

@@ -7,39 +7,38 @@ import static mindustry.Vars.*;
 
 public enum Nydus{
 
-    reactor_terrain_clearing(() -> true, "#thorium-reactor explosions destroy terrain"),
-    driver_terrain_clearing(() -> true, "#mass-driver bullets tear through terrain"),
+    reactor_terrain_clearing(() -> true, "#thorium-reactor thorium reactor explosions {destroy terrain}"),
+    driver_terrain_clearing(() -> true, "#mass-driver mass driver bullets {tear through terrain}"),
 
-    incinerator_makes_pyratite(() -> true, "#incinerator has a chance to make #pyratite"),
-    unpowered_mechpad_tarring(() -> true, "#dart-mech-pad gives debuff when lacking power"),
+    incinerator_makes_pyratite(() -> true, "#incinerator burning items gives {random} #pyratite pyratite"),
 
-    separator_free_slag(() -> true, "#separator contains free #slag"),
-    separator_sedimentation(() -> true, "#separator turns items into #titanium when not rotating"),
+    separator_free_slag(() -> true, "#separator separators contain {free} #slag slag"),
+    separator_sedimentation(() -> true, "#separator separators that are {clogged} make #titanium titanium"),
 
-    airblast_bonus_output(() -> true, "#blast-drill gives 5 bonus items every 10 normal items"),
-    landfill_on_drowning(() -> true, "#water drowning when holding items creates land tiles"),
-    enemy_item_drops(() -> true, "#core-shard enemies that die near your core drop what they carry"),
-    pulverizer_on_ore(() -> true, "#pulverizer placed on ores contain infinite scrap"),
+    airblast_bonus_output(() -> true, "#blast-drill airblast drills periodically gives {5} bonus items"),
+    landfill_on_drowning(() -> true, "#water drowning in deep water {while holding items} creates land"),
+    enemy_item_drops(() -> true, "#core-shard enemies that die near your core give you {what they carry}"),
 
-    block_merging(() -> true, "#scrap-wall blocks merge into larger blocks #scrap-wall-large"),
-    block_downgrading(() -> true, "#titanium-conveyor blocks downgrade when destroyed #conveyor"),
-    launchpad_upgrading(() -> true, "#launchpad vaults next to the core transform to upgrade blocks"),
+    pulverizer_on_ore(() -> true, "#pulverizer placing a pulverizer on any {ore} gives it infinite #scap scrap"),
 
-    cascading_doors(() -> true, "#door opening/closing doors impact neighboring ones"),
-    rtg_generator_sharing(() -> true, "#rtg-generator shares its #thorium fuel with its friends"),
-    the_floor_is_lava(() -> true, "#magmarock sets fire to anything other than #thermal-generator"),
-    single_use_batteries(() -> true, "#battery full when placed & explodes when empty"),
+    block_merging(() -> true, "#plastanium-wall-large several blocks {of the same type} might merge into one"),
+    block_downgrading(() -> true, "#titanium-conveyor certain blocks {downgrade} instead of being destroyed #conveyor"),
+    launchpad_upgrading(() -> true, "#launchpad to {upgrade blocks} you must place a #vault vault next to your core"),
 
-    free_phase_overdrive(() -> true, "#overdrive-projector contains free phase when surrounded by #phase-wall"),
-    free_phase_forcefield(() -> true, "#force-projector contains free phase when surrounded by #phase-wall"),
+    cascading_doors(() -> true, "#door using a door also toggles the doors {next to it}"),
+    rtg_generator_sharing(() -> true, "#rtg-generator rtg generators {share} #thorium fuel with adjacent ones"),
+    the_floor_is_lava(() -> true, "#magmarock magma tiles {set fire to anything} other than #thermal-generator thermal generators"),
+    single_use_batteries(() -> true, "#battery small batteries are {full when placed} but will explode when empty"),
 
-    duo_router(() -> true, "#duo turns into #router when attempting to shoot"),
-    firefighting_waves(() -> true, "#wave consumes no liquid to fight fires"),
-    combustible_combustion(() -> true, "#combustion-generator combusts when fed #coal"),
-    dyson_sphere(() -> true, "#solar-panel gives more power when there are more of em"),
-    repairpoint_wololoo(() -> true, "#repair-point switches your team on-demand"),
-    portal_bridge_builder(() -> true, "#bridge-conveyor & #bridge-conduit cannot chain"),
-    thanos_junction_snap(() -> true, "#junction gets removed when nothing crosses it");
+    free_phase_overdrive(() -> true, "#overdrive-projector overdrivers get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
+    free_phase_forcefield(() -> true, "#overdrive-projector forcefields get fee #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
+
+    duo_router(() -> true, "#duo duo turrets will turn into #router routers {randomly}"),
+    combustible_combustion(() -> true, "#combustion-generator combustion generators {explode} when you give them #coal coal"),
+    dyson_sphere(() -> true, "#solar-panel solar panels give {more power} the more of them you have"),
+    repairpoint_wololoo(() -> true, "#repair-point getting close to an enemy repair point {switches your team}"),
+    portal_bridge_builder(() -> true, "#bridge-conveyor non #phase-fabric phase bridges {cannot chain}"),
+    thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time");
 
     private final Boolp active;
     public String description;
@@ -58,5 +57,8 @@ public enum Nydus{
                 this.description = this.description.replace(word, "" + (char)Fonts.getUnicode(word.substring(1)));
             }
         }
+
+        this.description =this.description.replaceAll("\\{", "[accent]");
+        this.description =this.description.replaceAll("\\}", "[]");
     }
 }
