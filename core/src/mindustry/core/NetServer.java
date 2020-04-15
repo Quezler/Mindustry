@@ -874,7 +874,7 @@ public class NetServer implements ApplicationListener{
             }
         }
 
-        Call.onInfoToast("/readme", 2.5f);
+        Call.onInfoToast(player.con,"/readme", 2.5f);
     }
 
     public boolean isWaitingForPlayers(){
