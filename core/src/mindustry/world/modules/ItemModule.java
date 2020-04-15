@@ -112,6 +112,12 @@ public class ItemModule extends BlockModule{
         }
     }
 
+    public void refund(ItemStack[] stacks, float multiplier){
+        for(ItemStack stack : stacks){
+            add(stack.item, Math.round(stack.amount * multiplier));
+        }
+    }
+
     public void remove(Item item, int amount){
         amount = Math.min(amount, items[item.id]);
 

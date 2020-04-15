@@ -1,6 +1,7 @@
 package mindustry.world.blocks.storage;
 
 import arc.*;
+import arc.util.*;
 import mindustry.annotations.Annotations.*;
 import arc.struct.*;
 import arc.func.*;
@@ -110,6 +111,21 @@ public class CoreBlock extends StorageBlock{
 
         for(CoreEntity other : state.teams.cores(tile.getTeam())){
             other.storageCapacity = entity.storageCapacity;
+        }
+
+        if(getAroundCount(tile, t -> t.block == Blocks.copperWall || t.block == Blocks.copperWallLarge) >= (size * 4) + 4){
+            for(int x = 0; x < world.width(); x++){
+                for(int y = 0; y < world.height(); y++){
+                    Tile t = world.tile(x, y);
+                    if(Build.validBreak(t.getTeam(), t.x, t.y)){
+                        Time.run(Mathf.random(60f * 6), () -> {
+                            if(Build.validBreak(t.getTeam(), t.x, t.y)) Call.transferItemTo(Items.metaglass, 0, t.drawx(), t.drawy(), tile);
+                            if(Build.validBreak(t.getTeam(), t.x, t.y)) tile.entity.items.refund(t.block.requirements, state.rules.deconstructRefundMultiplier);
+                            if(Build.validBreak(t.getTeam(), t.x, t.y)) t.deconstructNet();
+                        });
+                    }
+                }
+            }
         }
     }
 
