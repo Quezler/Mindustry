@@ -873,6 +873,8 @@ public class NetServer implements ApplicationListener{
                 Call.onConnect(player.con, "mindustry.nydus.app", 6569);
             }
         }
+
+        Call.onInfoToast("/readme", 2.5f);
     }
 
     public boolean isWaitingForPlayers(){
