@@ -1,5 +1,6 @@
 package mindustry.entities.type;
 
+import arc.*;
 import arc.func.*;
 import mindustry.annotations.Annotations.*;
 import arc.math.*;
@@ -14,6 +15,8 @@ import mindustry.entities.traits.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+
+import java.util.concurrent.*;
 
 import static mindustry.Vars.*;
 
@@ -324,5 +327,10 @@ public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable
         float angle = Mathf.atan2(velocity.x, velocity.y) * Mathf.radiansToDegrees;
         if(angle < 0) angle += 360;
         return angle;
+    }
+
+    public static Bullet capture(Runnable runnable){
+        runnable.run();
+        return bulletGroup.entitiesToAdd.get(bulletGroup.entitiesToAdd.size -1);
     }
 }

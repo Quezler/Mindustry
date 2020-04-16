@@ -89,7 +89,6 @@ public class CoreBarrage implements ApplicationListener{
         float dst = tile.dst(predict.x, predict.y);
         float maxTraveled = type.lifetime * type.speed;
 
-        Call.createBullet(type, tile.getTeam(), tile.drawx(), tile.drawy(), tile.angleTo(other), 1f, (dst / maxTraveled));
-        return bulletGroup.entitiesToAdd.get(bulletGroup.entitiesToAdd.size -1);
+        return Bullet.capture(() -> Call.createBullet(type, tile.getTeam(), tile.drawx(), tile.drawy(), tile.angleTo(other), 1f, (dst / maxTraveled)));
     }
 }
