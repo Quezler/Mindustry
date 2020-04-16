@@ -6,6 +6,7 @@ import arc.struct.*;
 import arc.util.ArcAnnotate.*;
 import arc.util.*;
 import mindustry.entities.type.*;
+import mindustry.world.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 
 import static mindustry.Vars.*;
@@ -148,6 +149,7 @@ public class Teams{
         public final Array<Team> enemies = new Array<>();
         public final Team team;
         public Queue<BrokenBlock> brokenBlocks = new Queue<>();
+        public Array<Tile> refundingBlocks = new Array<>();
 
         public TeamData(Team team){
             this.team = team;
