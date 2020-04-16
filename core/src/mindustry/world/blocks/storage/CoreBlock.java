@@ -216,7 +216,7 @@ public class CoreBlock extends StorageBlock{
         CoreEntity entity = tile.ent();
 
         if(!tile.getTeam().data().refundingBlocks.isEmpty()){
-            Tile t = Geometry.findClosest(tile.x, tile.y, tile.getTeam().data().refundingBlocks);
+            Tile t = Geometry.findClosest(tile.drawx(), tile.drawy(), tile.getTeam().data().refundingBlocks);
 
             if(Build.validBreak(tile.getTeam(), t.x, t.y)){
                 Call.transferItemTo(Items.metaglass, 0, t.drawx(), t.drawy(), tile);
