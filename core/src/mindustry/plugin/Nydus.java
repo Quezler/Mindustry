@@ -23,7 +23,7 @@ public enum Nydus{
 
     block_merging(() -> true, "#plastanium-wall-large several blocks {of the same type} might merge into one"),
     block_downgrading(() -> true, "#titanium-conveyor certain blocks {downgrade} instead of being destroyed #conveyor"),
-    launchpad_upgrading(() -> true, "#launchpad to {upgrade blocks} you must place a #vault vault next to your core"),
+    launchpad_upgrading(() -> true, "#launch-pad to {upgrade blocks} you must place a #vault vault next to your core"),
 
     cascading_doors(() -> true, "#door using a door also toggles the doors {next to it}"),
     rtg_generator_sharing(() -> true, "#rtg-generator rtg generators {share} #thorium fuel with adjacent ones"),
@@ -31,7 +31,7 @@ public enum Nydus{
     single_use_batteries(() -> true, "#battery small batteries are {full when placed} but will explode when empty"),
 
     free_phase_overdrive(() -> true, "#overdrive-projector overdrivers get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
-    free_phase_forcefield(() -> true, "#overdrive-projector forcefields get fee #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
+    free_phase_forcefield(() -> true, "#overdrive-projector forcefields get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
 
     duo_yeeter(() -> true, "#duo duo turrets can {lob} #copper-walls copper walls at the enemy"),
     combustible_combustion(() -> true, "#combustion-generator combustion generators {explode} when you give them #coal coal"),
