@@ -8,7 +8,6 @@ import static mindustry.Vars.*;
 public enum Nydus{
 
     reactor_terrain_clearing(() -> true, "#thorium-reactor thorium reactor explosions {destroy terrain}"),
-    driver_terrain_clearing(() -> true, "#mass-driver mass driver bullets {tear through terrain}"),
 
     incinerator_makes_pyratite(() -> true, "#incinerator burning items gives {random} #pyratite pyratite"),
 
