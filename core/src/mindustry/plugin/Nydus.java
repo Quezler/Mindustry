@@ -38,7 +38,9 @@ public enum Nydus{
     dyson_sphere(() -> true, "#solar-panel solar panels give {more power} the more of them you have"),
     repairpoint_wololoo(() -> true, "#repair-point getting close to an enemy repair point {switches your team}"),
     portal_bridge_builder(() -> true, "#bridge-conveyor non #phase-fabric phase bridges {cannot chain}"),
-    thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time");
+    thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time"),
+
+    water_from_the_nile(() -> true, "#water {water from the nile} gives free water to some blocks");
 
     private final Boolp active;
     public String description;
