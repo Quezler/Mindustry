@@ -14,7 +14,7 @@ public class UnitDrops{
 
         if(!Nydus.enemy_item_drops.active() || unit.item().amount == 0 || unit.item().item == null) return;
 
-        if(core != null && core.dst(unit) <= Vars.mineTransferRange){
+        if(core != null && core.dst(unit) <= Vars.mineTransferRange * 3){
             unit.item().amount = core.tile.block().acceptStack(unit.item().item, unit.item().amount, core.tile, null);
             Call.transferItemTo(unit.item().item, unit.item().amount, unit.x + Mathf.range(2f), unit.y + Mathf.range(2f), core.tile);
         }
