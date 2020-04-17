@@ -264,24 +264,22 @@ public class BuildBlock extends Block{
 
             progress = Mathf.clamp(progress + maxProgress);
 
-            if(Nydus.launchpad_upgrading.active()){
-                // downgrade titanium conveyors
-                if(cblock == Blocks.titaniumConveyor || cblock == Blocks.conveyor){
-                    constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
-                    Core.app.post(() -> tile.setNet(Blocks.conveyor, builder.getTeam(), tile.rotation));
-                    return true;
-                }
-
-                // downgrade titanium conduits
-                if(cblock == Blocks.pulseConduit || cblock == Blocks.conduit){
-                    constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
-                    Core.app.post(() -> tile.setNet(Blocks.conduit, builder.getTeam(), tile.rotation));
-                    return true;
-                }
-            }
-
             if(progress >= 1f || state.rules.infiniteResources){
                 constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                return true;
+            }
+
+            // downgrade titanium conveyors
+            if(progress == 0f && (cblock == Blocks.titaniumConveyor || cblock == Blocks.conveyor)){
+                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                Core.app.post(() -> tile.setNet(Blocks.conveyor, builder.getTeam(), tile.rotation));
+                return true;
+            }
+
+            // downgrade titanium conduits
+            if(progress == 0f && (cblock == Blocks.pulseConduit || cblock == Blocks.conduit)){
+                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                Core.app.post(() -> tile.setNet(Blocks.conduit, builder.getTeam(), tile.rotation));
                 return true;
             }
 

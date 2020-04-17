@@ -23,7 +23,6 @@ public enum Nydus{
 
     block_merging(() -> true, "#plastanium-wall-large several blocks {of the same type} might merge into one"),
     block_downgrading(() -> true, "#titanium-conveyor certain blocks {downgrade} instead of being destroyed #conveyor"),
-    launchpad_upgrading(() -> true, "#launch-pad to {upgrade blocks} you must place a #vault vault next to your core"),
 
     cascading_doors(() -> true, "#door using a door also toggles the doors {next to it}"),
     rtg_generator_sharing(() -> true, "#rtg-generator rtg generators {share} #thorium fuel with adjacent ones"),
@@ -40,6 +39,7 @@ public enum Nydus{
     portal_bridge_builder(() -> true, "#bridge-conveyor non #phase-fabric phase bridges {cannot chain}"),
     thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time"),
 
+    launchpad_upgrading(() -> true, "#launch-pad a launch pad can {upgrade blocks automatically} for your team"),
     water_from_the_nile(() -> true, "#water {water from the nile} gives free water to some blocks");
 
     private final Boolp active;
