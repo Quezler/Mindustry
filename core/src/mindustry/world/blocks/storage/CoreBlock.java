@@ -1,7 +1,6 @@
 package mindustry.world.blocks.storage;
 
 import arc.*;
-import arc.util.*;
 import mindustry.annotations.Annotations.*;
 import arc.struct.*;
 import arc.func.*;
@@ -103,23 +102,14 @@ public class CoreBlock extends StorageBlock{
             entity.storageCapacity += other.block.itemCapacity + other.proximity().sum(e -> isContainer(e) ? e.block().itemCapacity : 0);
         }
 
-//        if(!world.isGenerating()){
-//            for(Item item : content.items()){
-//                entity.items.set(item, Math.min(entity.items.get(item), entity.storageCapacity));
-//            }
-//        }
+        if(!world.isGenerating()){
+            for(Item item : content.items()){
+                entity.items.set(item, Math.min(entity.items.get(item), entity.storageCapacity));
+            }
+        }
 
         for(CoreEntity other : state.teams.cores(tile.getTeam())){
             other.storageCapacity = entity.storageCapacity;
-        }
-
-        if(getAroundCount(tile, t -> t.block == Blocks.copperWall || t.block == Blocks.copperWallLarge) >= (size * 4) + 4){
-            for(int x = 0; x < world.width(); x++){
-                for(int y = 0; y < world.height(); y++){
-                    Tile t = world.tile(x, y);
-                    if(Build.validBreak(t.getTeam(), t.x, t.y) && !tile.getTeam().data().refundingBlocks.contains(t)) tile.getTeam().data().refundingBlocks.add(t);
-                }
-            }
         }
     }
 
@@ -214,18 +204,6 @@ public class CoreBlock extends StorageBlock{
     @Override
     public void update(Tile tile){
         CoreEntity entity = tile.ent();
-
-        if(!tile.getTeam().data().refundingBlocks.isEmpty()){
-            Tile t = Geometry.findClosest(tile.drawx(), tile.drawy(), tile.getTeam().data().refundingBlocks);
-
-            if(Build.validBreak(tile.getTeam(), t.x, t.y)){
-                Call.transferItemTo(Items.metaglass, 0, t.drawx(), t.drawy(), tile);
-                tile.entity.items.refund(t.block.requirements, state.rules.deconstructRefundMultiplier);
-                Core.app.post(t::deconstructNet);
-            }
-
-            tile.getTeam().data().refundingBlocks.remove(t);
-        }
 
         if(entity.spawnPlayer != null){
             if(!entity.spawnPlayer.isDead() || !entity.spawnPlayer.isAdded()){

@@ -149,7 +149,6 @@ public class Teams{
         public final Array<Team> enemies = new Array<>();
         public final Team team;
         public Queue<BrokenBlock> brokenBlocks = new Queue<>();
-        public Array<Tile> refundingBlocks = new Array<>();
 
         public TeamData(Team team){
             this.team = team;
