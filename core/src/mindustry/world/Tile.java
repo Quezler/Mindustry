@@ -354,6 +354,7 @@ public class Tile implements Position, TargetTrait{
             if(point == null) continue;
             Tile other = world.ltile(x + point.x, y + point.y);
             if(other == null) continue;
+            if(tmpArray.contains(other)) continue;
 
             tmpArray.add(other);
         }
