@@ -7,7 +7,7 @@ import arc.struct.EnumSet;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import mindustry.Vars;
-import mindustry.content.Fx;
+import mindustry.content.*;
 import mindustry.entities.Effects;
 import mindustry.entities.traits.*;
 import mindustry.entities.type.*;
@@ -15,6 +15,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.Call;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.Bar;
 import mindustry.ui.Cicon;
@@ -34,6 +35,8 @@ public class UnitFactory extends Block{
     public TextureRegion topRegion;
     public int maxSpawn = 4;
     public int[] capacities;
+
+    protected final int timerDraug = timers++;
 
     public UnitFactory(String name){
         super(name);
@@ -60,6 +63,9 @@ public class UnitFactory extends Block{
 
         if(!net.client()){
             BaseUnit unit = factory.unitType.create(tile.getTeam());
+
+            if(unit.getType() == UnitTypes.draug && Nydus.draug_home_isolation.active()) return;
+
             unit.setSpawner(tile);
             unit.set(tile.drawx() + Mathf.range(4), tile.drawy() + Mathf.range(4));
             unit.add();
@@ -157,6 +163,11 @@ public class UnitFactory extends Block{
         UnitFactoryEntity entity = tile.ent();
 
         if(entity.spawned >= maxSpawn){
+            if(unitType == UnitTypes.draug && Nydus.draug_home_isolation.active() && entity.timer.get(timerDraug, 60) && !tile.getTeam().cores().isEmpty()){
+                Tile core = tile.getTeam().core().tile;
+                if(core.block.acceptItem(Items.copper, core, null)) core.block.handleItem(Items.copper, core, null);
+                if(core.block.acceptItem(Items.lead, core, null)) core.block.handleItem(Items.lead, core, null);
+            }
             return;
         }
 

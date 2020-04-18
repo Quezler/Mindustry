@@ -38,6 +38,8 @@ public enum Nydus{
     portal_bridge_builder(() -> true, "#bridge-conveyor non-phase bridges can {collapse} when full"),
     thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time"),
 
+    draug_home_isolation(() -> true, "#draug-factory miner drones work from home due to {corona}"),
+
     launchpad_upgrading(() -> true, "#launch-pad a launch pad can {upgrade blocks automatically} for your team"),
     water_from_the_nile(() -> true, "#water {water from the nile} gives free water to some blocks");
 
