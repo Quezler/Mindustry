@@ -14,6 +14,7 @@ import mindustry.entities.type.*;
 import mindustry.entities.type.BaseEntity;
 import mindustry.graphics.*;
 import mindustry.plugin.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
@@ -160,10 +161,12 @@ public class ForceProjector extends Block{
     }
 
     @Override
-    public void unloaded(Tile tile, Tile by){
-        Core.app.post(() -> {
-            if(tile.entity != null) tile.entity.kill();
-        });
+    public void unloaded(Tile tile, Item item, Tile other){
+        if(item == Items.phasefabric && Nydus.free_phase_forcefield.active()){
+            Core.app.post(() -> {
+                if(tile.entity != null) tile.entity.kill();
+            });
+        }
     }
 
     @Override

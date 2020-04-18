@@ -10,6 +10,7 @@ import mindustry.content.*;
 import mindustry.entities.type.*;
 import mindustry.graphics.*;
 import mindustry.plugin.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -125,10 +126,12 @@ public class OverdriveProjector extends Block{
     }
 
     @Override
-    public void unloaded(Tile tile, Tile by){
-        Core.app.post(() -> {
-            if(tile.entity != null) tile.entity.kill();
-        });
+    public void unloaded(Tile tile, Item item, Tile other){
+        if(item == Items.phasefabric && Nydus.free_phase_overdrive.active()){
+            Core.app.post(() -> {
+                if(tile.entity != null) tile.entity.kill();
+            });
+        }
     }
 
     @Override

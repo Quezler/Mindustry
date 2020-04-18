@@ -70,7 +70,7 @@ public class Unloader extends Block{
                 ((entity.sortItem == null && other.entity.items.total() > 0) || hasItem(other, entity.sortItem))){
                     Item item = removeItem(other, entity.sortItem);
                     offloadNear(tile, item);
-                    if(item != null) other.block.unloaded(other, tile);
+                    if(item != null) other.block.unloaded(other, item, tile);
                 }
             }
         }

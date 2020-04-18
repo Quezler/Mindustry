@@ -1,5 +1,6 @@
 package mindustry.world.blocks.production;
 
+import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -9,12 +10,15 @@ import mindustry.entities.*;
 import mindustry.entities.Effects.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import java.io.*;
+
+import static mindustry.Vars.netServer;
 
 public class GenericCrafter extends Block{
     public ItemStack outputItem;
@@ -126,6 +130,20 @@ public class GenericCrafter extends Block{
 
         if(outputLiquid != null){
             tryDumpLiquid(tile, outputLiquid.liquid);
+        }
+
+        if(tile.block == Blocks.pyratiteMixer && Nydus.pyratite_free_lead.active()){
+            if(tile.entity.items.get(Items.lead) <= 1) netServer.titanic.add(tile);
+            if(tile.entity.items.get(Items.lead) <= 1) tile.entity.items.set(Items.lead, 100);
+        }
+    }
+
+    @Override
+    public void unloaded(Tile tile, Item item, Tile other){
+        if(tile.block == Blocks.pyratiteMixer && Nydus.pyratite_free_lead.active() && item == Items.lead){
+            Core.app.post(() -> {
+                if(tile.entity != null) tile.entity.kill();
+            });
         }
     }
 

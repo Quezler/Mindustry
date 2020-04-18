@@ -3,6 +3,7 @@ package mindustry.world.blocks.production;
 import arc.*;
 import mindustry.content.*;
 import mindustry.plugin.*;
+import mindustry.type.*;
 import mindustry.world.*;
 
 import static mindustry.Vars.netServer;
@@ -27,9 +28,11 @@ public class Pulverizer extends GenericCrafter{
     }
 
     @Override
-    public void unloaded(Tile tile, Tile by){
-        Core.app.post(() -> {
-            if(tile.entity != null) tile.entity.kill();
-        });
+    public void unloaded(Tile tile, Item item, Tile other){
+        if(item == Items.scrap){
+            Core.app.post(() -> {
+                if(tile.entity != null) tile.entity.kill();
+            });
+        }
     }
 }

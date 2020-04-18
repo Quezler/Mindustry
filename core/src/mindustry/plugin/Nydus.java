@@ -8,7 +8,9 @@ import static mindustry.Vars.*;
 public enum Nydus{
 
     reactor_terrain_clearing(() -> true, "#thorium-reactor thorium reactor explosions {destroy terrain}"),
-    
+
+    pyratite_free_lead(() -> true, "#pyratite-mixer the pyratite mixer contains {free} #lead lead"),
+
     separator_free_slag(() -> true, "#separator separators contain {free} #slag slag"),
     separator_sedimentation(() -> true, "#separator separators that are {clogged} make #titanium titanium"),
 
