@@ -1235,7 +1235,7 @@ public class Blocks implements ContentList{
             powerProduction = 0.06f;
 
             flags = EnumSet.of(BlockFlag.upgradable, BlockFlag.solar);
-            upgrade = t -> t.getAroundTiles(new Array<>()).count(i -> i.block != air) == 0 ? largeSolarPanel : null;
+            upgrade = t -> t.getAroundTiles(new Array<>()).count(i -> i.block != air) == 0 ? largeSolarPanel : air;
         }};
 
         largeSolarPanel = new SolarGenerator("solar-panel-large"){{
