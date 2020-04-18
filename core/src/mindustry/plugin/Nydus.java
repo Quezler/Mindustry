@@ -26,7 +26,7 @@ public enum Nydus{
     cascading_doors(() -> true, "#door using a door also toggles the doors {next to it}"),
     rtg_generator_sharing(() -> true, "#rtg-generator rtg generators {share} #thorium fuel with adjacent ones"),
     the_floor_is_lava(() -> true, "#magmarock magma tiles {set fire to anything} other than #thermal-generator thermal generators"),
-    single_use_batteries(() -> true, "#battery small batteries are {full when placed} but will explode when empty"),
+    single_use_batteries(() -> true, "#battery small batteries contain {a little power} when placed"),
 
     free_phase_overdrive(() -> true, "#overdrive-projector overdrivers get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
     free_phase_forcefield(() -> true, "#overdrive-projector forcefields get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
