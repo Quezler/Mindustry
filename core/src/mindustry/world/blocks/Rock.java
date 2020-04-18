@@ -4,6 +4,9 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.util.*;
+import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 
@@ -41,5 +44,16 @@ public class Rock extends Block{
                 variantRegions[i] = Core.atlas.find(name + (i + 1));
             }
         }
+    }
+
+    @Override
+    public void removed(Tile tile){
+        super.removed(tile);
+        Block block = tile.block();
+        Team team = tile.getTeam();
+
+        Time.run(Mathf.random(60f * 10), () -> {
+            if(tile.block == Blocks.air) tile.constructNet(block, team, (byte)0);
+        });
     }
 }
