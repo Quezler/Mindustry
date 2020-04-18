@@ -93,6 +93,7 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(new PowerFlower());
         Core.app.addListener(new BridgeBlocker());
         Core.app.addListener(new NileWater());
+        Core.app.addListener(new LavaBender());
 
         mods.eachClass(Mod::init);
 
