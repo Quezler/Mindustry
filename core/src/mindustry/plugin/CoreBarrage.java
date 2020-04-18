@@ -49,6 +49,7 @@ public class CoreBarrage implements ApplicationListener{
 
         fired.deathrattle = b -> Core.app.post(() -> {
             if(other.block.upgrade != null && other.block.upgrade.get(other) != null && other.block.upgrade.get(other) == pending.get(other)){
+                coreDeposit(owner, other.block);
                 other.block.upgrade(other);
             }else{
                 if(!owner.cores().isEmpty()) coreDeposit(owner, charged);
