@@ -95,7 +95,7 @@ public class LaunchPad extends StorageBlock{
         }
 
         if(Nydus.launchpad_upgrading.active()){
-            if(entity.timer.get(timerSilo, 60 * 2.5f) && entity.cons.valid()){
+            if(entity.timer.get(timerSilo, 60 * 4f) && entity.cons.valid()){
                 Core.app.post(() -> {
                     Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
                     for(int i = 0; i < itemCapacity / 5; ++i){
