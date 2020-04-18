@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.world.Block;
@@ -49,6 +50,7 @@ public class Rock extends Block{
     @Override
     public void removed(Tile tile){
         super.removed(tile);
+        if(Vars.world.isGenerating()) return;
         Block block = tile.block();
         Team team = tile.getTeam();
 
