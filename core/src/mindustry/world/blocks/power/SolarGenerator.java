@@ -1,6 +1,10 @@
 package mindustry.world.blocks.power;
 
+import arc.math.*;
 import arc.struct.*;
+import mindustry.content.*;
+import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -18,6 +22,10 @@ public class SolarGenerator extends PowerGenerator{
     @Override
     public void update(Tile tile){
         tile.<GeneratorEntity>ent().productionEfficiency = state.rules.solarPowerMultiplier < 0 ? (state.rules.lighting ? 1f - state.rules.ambientLight.a : 1f) : state.rules.solarPowerMultiplier;
+
+        if(tile.block == Blocks.largeSolarPanel && Nydus.zombies_on_your_lawn.active()){
+            if(Mathf.chance(0.001f) && !tile.getTeam().cores().isEmpty()) Call.transferItemTo(Items.phasefabric, 1, tile.drawx(), tile.drawy(), state.teams.closestCore(tile.drawx(), tile.drawy(), tile.getTeam()).tile);
+        }
     }
 
     @Override
