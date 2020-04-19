@@ -952,6 +952,7 @@ public class Blocks implements ContentList{
 
             flags = EnumSet.of(BlockFlag.upgradable);
             upgrade = t -> titaniumConveyor;
+            sandwiches = t -> (float)t.<ConveyorEntity>ent().items.total();
         }};
 
         titaniumConveyor = new Conveyor("titanium-conveyor"){{
@@ -975,6 +976,8 @@ public class Blocks implements ContentList{
 
                 return armoredConveyor;
             };
+
+            sandwiches = t -> 1f - t.entity.healthf();
         }};
 
         armoredConveyor = new ArmoredConveyor("armored-conveyor"){{
@@ -1110,6 +1113,7 @@ public class Blocks implements ContentList{
 
                 return platedConduit;
             };
+            sandwiches = t -> 1f - t.entity.healthf();
         }};
 
         platedConduit = new ArmoredConduit("plated-conduit"){{
@@ -1117,6 +1121,7 @@ public class Blocks implements ContentList{
             liquidCapacity = 16f;
             liquidPressure = 1.025f;
             health = 220;
+            sandwiches = t -> 1f - t.entity.healthf();
         }};
 
         liquidRouter = new LiquidRouter("liquid-router"){{
@@ -1188,6 +1193,13 @@ public class Blocks implements ContentList{
 
             flags = EnumSet.of(BlockFlag.upgradable);
             upgrade = t -> t.getAroundTiles(new Array<>()).count(i -> i.block == air || i.block == battery || i.block instanceof StaticWall) == 8 ? batteryLarge : null;
+            sandwiches = t -> {
+                return
+                (t.getNearby(+3, +0) != null && t.getNearby(+3, +0).block == batteryLarge ? 1f : 0f) +
+                (t.getNearby(-3, -0) != null && t.getNearby(-3, -0).block == batteryLarge ? 1f : 0f) +
+                (t.getNearby(+0, +3) != null && t.getNearby(+0, +3).block == batteryLarge ? 1f : 0f) +
+                (t.getNearby(-0, -3) != null && t.getNearby(-0, -3).block == batteryLarge ? 1f : 0f);
+            };
         }};
 
         batteryLarge = new Battery("battery-large"){{
@@ -1245,6 +1257,13 @@ public class Blocks implements ContentList{
 
             flags = EnumSet.of(BlockFlag.upgradable, BlockFlag.solar);
             upgrade = t -> t.getAroundTiles(new Array<>()).count(i -> i.block == air || i.block == solarPanel || i.block instanceof StaticWall) == 8 ? largeSolarPanel : null;
+            sandwiches = t -> {
+                return
+                (t.getNearby(+3, +0) != null && t.getNearby(+3, +0).block == largeSolarPanel ? 1f : 0f) +
+                (t.getNearby(-3, -0) != null && t.getNearby(-3, -0).block == largeSolarPanel ? 1f : 0f) +
+                (t.getNearby(+0, +3) != null && t.getNearby(+0, +3).block == largeSolarPanel ? 1f : 0f) +
+                (t.getNearby(-0, -3) != null && t.getNearby(-0, -3).block == largeSolarPanel ? 1f : 0f);
+            };
         }};
 
         largeSolarPanel = new SolarGenerator("solar-panel-large"){{
@@ -1288,6 +1307,7 @@ public class Blocks implements ContentList{
 
             flags = EnumSet.of(BlockFlag.upgradable);
             upgrade = t -> pneumaticDrill;
+            sandwiches = t -> t.<DrillEntity>ent().dominantItem == Items.coal ? 10f : 0f;
         }};
 
         pneumaticDrill = new Drill("pneumatic-drill"){{

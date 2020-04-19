@@ -17,6 +17,7 @@ public class Wall extends Block{
         destructible = true;
         group = BlockGroup.walls;
         buildCostMultiplier = 5f;
+        sandwiches = t -> -1f;
     }
 
     @Override

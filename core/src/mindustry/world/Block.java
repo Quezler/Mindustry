@@ -147,6 +147,7 @@ public class Block extends BlockStorage{
     /** What this block can merge into */
     public Prov<Block> upscale;
     public Func<Tile, Block> upgrade;
+    public Func<Tile, Float> sandwiches = t -> 0f;
     public Prov<Block> downgrade;
 
     protected TextureRegion[] cacheRegions = {};

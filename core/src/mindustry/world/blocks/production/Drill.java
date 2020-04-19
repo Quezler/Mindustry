@@ -335,7 +335,7 @@ public class Drill extends Block{
         float lastDrillSpeed;
 
         int dominantItems;
-        Item dominantItem;
+        public Item dominantItem;
     }
 
 }

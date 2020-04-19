@@ -98,9 +98,13 @@ public class LaunchPad extends StorageBlock{
             if(entity.timer.get(timerSilo, 60 * 4f) && entity.cons.valid()){
                 Core.app.post(() -> {
                     Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
+                    Array<Tile> awaiting = coreBarrage.upgradable(tile.getTeam());
+                    if(awaiting.isEmpty()) return;
+                    awaiting.sort(t -> t.block.sandwiches.get(t));
                     for(int i = 0; i < itemCapacity / 5; ++i){
-                        Tile other = Geometry.findClosest(tile.drawx(), tile.drawy(), coreBarrage.upgradable(tile.getTeam()));
-                        if(other == null) continue;
+                        if(awaiting.isEmpty()) return;
+                        Tile other = awaiting.pop();
+                        if(other == null || coreBarrage.pending.containsKey(other)) continue;
                         coreBarrage.fire(tile, other);
                     }
                 });
