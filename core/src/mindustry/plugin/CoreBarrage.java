@@ -12,6 +12,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 
@@ -66,7 +67,7 @@ public class CoreBarrage implements ApplicationListener{
             if(pending.containsKey(t)) return false;
             if(t.block.upgrade == null || t.block.upgrade.get(t) == null) return false;
             if(!coreAllow(team, t.block.upgrade.get(t))) return false;
-            if((t.block.upgrade.get(t) == Blocks.armoredConveyor || t.block.upgrade.get(t) == Blocks.platedConduit) && Units.closest(team, t.drawx(), t.drawy(), tilesize * 22, u -> u instanceof Player) != null) return false;
+            if((t.block.upgrade.get(t) == Blocks.armoredConveyor || t.block.upgrade.get(t) == Blocks.platedConduit || t.block instanceof BuildBlock) && Units.closest(team, t.drawx(), t.drawy(), tilesize * 22, u -> u instanceof Player) != null) return false;
             return true;
         }).asArray();
     }
