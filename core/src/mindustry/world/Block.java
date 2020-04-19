@@ -929,6 +929,7 @@ public class Block extends BlockStorage{
         if(upgrade == null || upgrade.get(tile) == null) return;
 
         tile.constructNet(upgrade.get(tile), tile.getTeam(), tile.rotation);
+        tile.block.placed(tile);
     }
 
     public void share(Tile tile){
