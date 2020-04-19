@@ -34,7 +34,6 @@ public enum Nydus{
 
     duo_yeeter(() -> true, "#duo duo turrets can {lob} #copper-walls copper walls at the enemy"),
     combustible_combustion(() -> true, "#combustion-generator combustion generators {explode} when you give them #coal coal"),
-    dyson_sphere(() -> true, "#solar-panel solar panels give {more power} the more of them you have"),
     repairpoint_wololoo(() -> true, "#repair-point getting close to an enemy repair point {switches your team}"),
     thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time"),
 

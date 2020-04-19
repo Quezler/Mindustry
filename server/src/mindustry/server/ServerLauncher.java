@@ -90,7 +90,6 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(new SiliconValley());
 
         Core.app.addListener(new JunctionYeeter());
-        Core.app.addListener(new PowerFlower());
         Core.app.addListener(new NileWater());
         Core.app.addListener(new LavaBender());
 
