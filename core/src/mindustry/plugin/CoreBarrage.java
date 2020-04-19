@@ -49,9 +49,12 @@ public class CoreBarrage implements ApplicationListener{
 
         fired.deathrattle = b -> Core.app.post(() -> {
             if(other.block.upgrade != null && other.block.upgrade.get(other) != null && other.block.upgrade.get(other) == pending.get(other)){
-                if(!owner.cores().isEmpty()) coreDeposit(owner, other.block);
+                // refund the tiles the new block will be on
+                if(!owner.cores().isEmpty()) other.getLinkedTilesAs(other.block.upgrade.get(other), new Array<>()).each(t -> coreDeposit(owner, t.block));
+                // perform the upgrade
                 other.block.upgrade(other);
             }else{
+                // refund the original block if upgrading doesn't happen
                 if(!owner.cores().isEmpty()) coreDeposit(owner, charged);
             }
             pending.remove(other);
