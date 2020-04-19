@@ -36,7 +36,6 @@ public enum Nydus{
     combustible_combustion(() -> true, "#combustion-generator combustion generators {explode} when you give them #coal coal"),
     dyson_sphere(() -> true, "#solar-panel solar panels give {more power} the more of them you have"),
     repairpoint_wololoo(() -> true, "#repair-point getting close to an enemy repair point {switches your team}"),
-    portal_bridge_builder(() -> true, "#bridge-conveyor non-phase bridges can {collapse} when full"),
     thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time"),
 
     draug_home_isolation(() -> true, "#draug-factory miner drones work from home due to {corona}"),

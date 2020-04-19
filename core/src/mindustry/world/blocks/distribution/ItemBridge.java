@@ -8,11 +8,9 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
 import mindustry.graphics.*;
-import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
@@ -197,12 +195,6 @@ public class ItemBridge extends Block{
 
             updateTransport(tile, other);
         }
-
-        if(tile.block == Blocks.itemBridge && Nydus.portal_bridge_builder.active()){
-            if(tile.entity.items.total() == itemCapacity && Mathf.chance(0.01f)) Core.app.post(() -> {
-                if(tile.entity != null) tile.entity.damage(1);
-            });
-        }
     }
 
     public void updateTransport(Tile tile, Tile other){
@@ -369,6 +361,13 @@ public class ItemBridge extends Block{
         return other.block() == this && (!checkDouble || other.<ItemBridgeEntity>ent().link != tile.pos());
     }
 
+    @Override
+    public void upgrade(Tile tile){
+        int link = tile.<ItemBridgeEntity>ent().link;
+        super.upgrade(tile);
+        tile.configureAny(link);
+    }
+
     public static class ItemBridgeEntity extends TileEntity{
         public int link = Pos.invalid;
         public IntSet incoming = new IntSet();
@@ -405,14 +404,6 @@ public class ItemBridge extends Block{
             for(int i = 0; i < links; i++){
                 incoming.add(stream.readInt());
             }
-        }
-
-        @Override
-        public void healBy(float amount){
-            if(block == Blocks.itemBridge && Nydus.portal_bridge_builder.active()) damage(amount);
-            if(block == Blocks.itemBridge && Nydus.portal_bridge_builder.active()) return;
-            health(health() + amount);
-            clampHealth();
         }
     }
 }
