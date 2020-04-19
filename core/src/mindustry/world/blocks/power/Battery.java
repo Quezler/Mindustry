@@ -37,10 +37,8 @@ public class Battery extends PowerDistributor{
         super.placed(tile);
 
         if(Nydus.single_use_batteries.active()){
-            if(tile.block == Blocks.battery){
-                tile.entity.power.status = 0.1f;
-                netServer.titanic.add(tile);
-            }
+            tile.entity.power.status = 0.1f;
+            netServer.titanic.add(tile);
         }
     }
 }
