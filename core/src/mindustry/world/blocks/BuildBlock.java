@@ -283,6 +283,15 @@ public class BuildBlock extends Block{
                 return true;
             }
 
+            // downgrade solar panels
+            if(progress == 0f && cblock == Blocks.largeSolarPanel && inventory != null && inventory.has(Blocks.solarPanel.requirements, state.rules.buildCostMultiplier)){
+                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                inventory.sub(Blocks.solarPanel.requirements, state.rules.buildCostMultiplier);
+                Core.app.post(() -> tile.deconstructNet());
+                Core.app.post(() -> tile.setNet(Blocks.solarPanel, builder.getTeam(), tile.rotation));
+                return true;
+            }
+
             return false;
         }
 
