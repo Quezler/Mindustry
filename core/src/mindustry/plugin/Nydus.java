@@ -10,8 +10,9 @@ public enum Nydus{
     reactor_terrain_clearing(() -> true, "#thorium-reactor thorium reactor explosions {destroy terrain}"),
 
     pyratite_free_lead(() -> true, "#pyratite-mixer the pyratite mixer contains {free} #lead lead"),
-
     separator_free_slag(() -> true, "#separator separators contain {free} #slag slag"),
+    cryofluid_free_water(() -> true, "#cryofluidmixer cryofluid is extracted from titanium {without} #water water"),
+
     separator_sedimentation(() -> true, "#separator separators that are {clogged} make #titanium titanium"),
 
     airblast_bonus_output(() -> true, "#blast-drill airblast drills periodically gives {5} bonus items"),
