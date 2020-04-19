@@ -54,8 +54,10 @@ public class Rock extends Block{
         Block block = tile.block();
         Team team = tile.getTeam();
 
-        Time.run(Mathf.random(60f * 10), () -> {
-            if(tile.block == Blocks.air) tile.constructNet(block, team, (byte)0);
-        });
+        if(block == Blocks.rock || block == Blocks.sandBoulder || block == Blocks.shaleBoulder || block == Blocks.snowrock){
+            Time.run(Mathf.random(60f * 10), () -> {
+                if(tile.block == Blocks.air) tile.constructNet(block, team, (byte)0);
+            });
+        }
     }
 }
