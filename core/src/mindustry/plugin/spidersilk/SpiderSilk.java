@@ -12,11 +12,13 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.type.*;
 import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
 import java.io.*;
+import java.util.concurrent.*;
 
 import static mindustry.Vars.*;
 
@@ -37,13 +39,17 @@ public class SpiderSilk implements ApplicationListener{
         Bullets.artilleryIncendiary,
         Bullets.artilleryExplosive,
         Bullets.artilleryPlastic);
+
+        Events.on(BlockBuildBeginEvent.class, event -> event.tile.block.silk(event.tile, silky::add));
+        Events.on(BlockBuildEndEvent.class, event -> event.tile.block.silk(event.tile, silky::add));
     }
 
     @Override
     public void update(){
         if(!state.is(State.playing)) return;
-        if(!timer.get(0, 60f * 2.5f)) return;
-        rescan();
+        if(!timer.get(0, 60f * 10f)) return;
+
+        CompletableFuture.runAsync(this::rescan);
     }
 
     protected void rescan(){

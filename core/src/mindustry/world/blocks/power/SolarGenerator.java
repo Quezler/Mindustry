@@ -65,6 +65,7 @@ public class SolarGenerator extends PowerGenerator{
                     requirements = Blocks.solarPanel.requirements;
                     trigger = () -> construct(Blocks.solarPanel);
                     team = daddy.getTeam();
+                    size = 5;
                 }});
             }
         });
