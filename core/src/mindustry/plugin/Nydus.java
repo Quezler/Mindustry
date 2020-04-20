@@ -37,7 +37,6 @@ public enum Nydus{
 
     draug_home_isolation(() -> true, "#draug-factory miner drones work from home due to {corona}"),
 
-    zombies_on_your_lawn(() -> true, "#solar-panel-large large solar panels have #phase-fabric {phasosynthesis}"),
     a_cover_is_not_the_book(() -> true, "#rock rocks tend to have something {hidden} under them"),
     launchpad_upgrading(() -> true, "#launch-pad a launch pad can {upgrade blocks automatically} for your team"),
     water_from_the_nile(() -> true, "#water {water from the nile} gives free water to some blocks");

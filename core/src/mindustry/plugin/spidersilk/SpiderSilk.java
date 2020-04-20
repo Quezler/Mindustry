@@ -79,6 +79,8 @@ public class SpiderSilk implements ApplicationListener{
         public Runnable trigger = () -> {};
         public Runnable after   = () -> {};
 
+        public float weightMultiplier = 1f;
+
         public Runnable added = () -> {
             footprint().each(t -> spiderSilk.reserved.add(t.pos()));
         };
@@ -107,12 +109,12 @@ public class SpiderSilk implements ApplicationListener{
             return tile.getLinkedTilesAs(size, spiderSilk.tempTiles);
         }
 
-        public int weight(){
+        public float weight(){
             int i = 0;
             for(ItemStack is : requirements){
                 i += is.amount;
             }
-            return i;
+            return i * weightMultiplier;
         }
     }
 }

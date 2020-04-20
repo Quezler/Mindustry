@@ -78,6 +78,8 @@ public class Wall extends Block{
             if(tile.block == from) cons.get(new Silk(tile){{
                 requirements = to.requirements;
                 trigger = () -> construct(to);
+
+                weightMultiplier = tile.entity.healthf();
             }});
         });
     }

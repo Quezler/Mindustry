@@ -149,6 +149,8 @@ public class Conduit extends LiquidBlock implements Autotiler{
             cons.get(new Silk(tile){{
                 requirements = Blocks.pulseConduit.requirements;
                 trigger = () -> construct(Blocks.pulseConduit);
+
+                tile.entity.proximity().each(t -> t.block == Blocks.pulseConduit, t -> weightMultiplier -= 0.25f);
             }});
         }
 

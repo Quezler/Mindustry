@@ -67,25 +67,15 @@ public class Battery extends PowerDistributor{
             }
         }
 
-        if(tile.block == Blocks.batteryLarge){
-            Tile daddy = tile;
-            aligned(tile, t -> {
-                if(t.getLinkedTilesAs(3, new Array<>()).count(i -> i.block == Blocks.air || i.block == Blocks.battery || i.block instanceof StaticWall) == 9){
-                    cons.get(new Silk(t){{
-                        requirements = Blocks.batteryLarge.requirements;
-                        trigger = () -> construct(Blocks.batteryLarge);
-                        team = daddy.getTeam();
-                        size = 3;
-                    }});
-                }
-            });
-        }
-    }
-
-    private void aligned(Tile tile, Cons<Tile> cons){
-        if(tile.getNearby(+3, +0) != null) cons.get(tile.getNearby(+3, +0));
-        if(tile.getNearby(-3, -0) != null) cons.get(tile.getNearby(-3, -0));
-        if(tile.getNearby(+0, +3) != null) cons.get(tile.getNearby(+0, +3));
-        if(tile.getNearby(-0, -3) != null) cons.get(tile.getNearby(-0, -3));
+        tile.getLinkedTilesAs(size + 2, tempTiles).each(t -> {
+            if(Build.validPlace(tile.getTeam(), t.x, t.y, Blocks.battery, 0)){
+                Tile daddy = tile;
+                cons.get(new Silk(t){{
+                    requirements = Blocks.battery.requirements;
+                    trigger = () -> construct(Blocks.battery);
+                    team = daddy.getTeam();
+                }});
+            }
+        });
     }
 }

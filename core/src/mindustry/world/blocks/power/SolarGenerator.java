@@ -26,10 +26,6 @@ public class SolarGenerator extends PowerGenerator{
     @Override
     public void update(Tile tile){
         tile.<GeneratorEntity>ent().productionEfficiency = state.rules.solarPowerMultiplier < 0 ? (state.rules.lighting ? 1f - state.rules.ambientLight.a : 1f) : state.rules.solarPowerMultiplier;
-
-        if(tile.block == Blocks.largeSolarPanel && Nydus.zombies_on_your_lawn.active()){
-            if(Mathf.chance(0.001f) && !tile.getTeam().cores().isEmpty()) Call.transferItemTo(Items.phasefabric, 1, tile.drawx(), tile.drawy(), state.teams.closestCore(tile.drawx(), tile.drawy(), tile.getTeam()).tile);
-        }
     }
 
     @Override
@@ -55,31 +51,22 @@ public class SolarGenerator extends PowerGenerator{
                     cons.get(new Silk(tile){{
                         requirements = Blocks.largeSolarPanel.requirements;
                         trigger = () -> construct(Blocks.largeSolarPanel);
+                        weightMultiplier = 0f; // high priority
                         size = 3;
                     }});
                 }
             }
         }
 
-        if(tile.block == Blocks.largeSolarPanel){
-            Tile daddy = tile;
-            aligned(tile, t -> {
-                if(t.getLinkedTilesAs(3, new Array<>()).count(i -> i.block == Blocks.air || i.block == Blocks.solarPanel || i.block instanceof StaticWall) == 9){
-                    cons.get(new Silk(t){{
-                        requirements = Blocks.largeSolarPanel.requirements;
-                        trigger = () -> construct(Blocks.largeSolarPanel);
-                        team = daddy.getTeam();
-                        size = 3;
-                    }});
-                }
-            });
-        }
-    }
-
-    private void aligned(Tile tile, Cons<Tile> cons){
-        if(tile.getNearby(+3, +0) != null) cons.get(tile.getNearby(+3, +0));
-        if(tile.getNearby(-3, -0) != null) cons.get(tile.getNearby(-3, -0));
-        if(tile.getNearby(+0, +3) != null) cons.get(tile.getNearby(+0, +3));
-        if(tile.getNearby(-0, -3) != null) cons.get(tile.getNearby(-0, -3));
+        tile.getLinkedTilesAs(size + 2, tempTiles).each(t -> {
+            if(Build.validPlace(tile.getTeam(), t.x, t.y, Blocks.solarPanel, 0)){
+                Tile daddy = tile;
+                cons.get(new Silk(t){{
+                    requirements = Blocks.solarPanel.requirements;
+                    trigger = () -> construct(Blocks.solarPanel);
+                    team = daddy.getTeam();
+                }});
+            }
+        });
     }
 }

@@ -96,7 +96,7 @@ public class LaunchPad extends StorageBlock{
         }
 
         if(Nydus.launchpad_upgrading.active()){
-            if(entity.timer.get(timerSilo, 60 * 0.5f) && entity.cons.valid()){
+            if(entity.timer.get(timerSilo, 10) && entity.cons.valid()){
                 Array<Silk> passed = spiderSilk.silky
                 .select(s -> s.team == tile.getTeam())
                 .select(s -> tile.entity.items.has(s.requirements, state.rules.buildCostMultiplier * 11))

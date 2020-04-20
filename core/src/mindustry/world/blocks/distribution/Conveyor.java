@@ -391,6 +391,8 @@ public class Conveyor extends Block implements Autotiler{
             cons.get(new Silk(tile){{
                 requirements = Blocks.titaniumConveyor.requirements;
                 trigger = () -> construct(Blocks.titaniumConveyor);
+
+                tile.entity.proximity().each(t -> t.block == Blocks.titaniumConveyor, t -> weightMultiplier -= 0.25f);
             }});
         }
 
