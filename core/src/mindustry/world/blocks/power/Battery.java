@@ -76,6 +76,7 @@ public class Battery extends PowerDistributor{
                         requirements = Blocks.battery.requirements;
                         trigger = () -> construct(Blocks.battery);
                         team = daddy.getTeam();
+                        size = 5;
                     }});
                 }
             });
