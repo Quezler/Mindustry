@@ -111,14 +111,16 @@ public class LaunchPad extends StorageBlock{
                         silk.added.run();
                         tile.entity.items.sub(silk.requirements, state.rules.buildCostMultiplier);
                         bullet.deathrattle = b -> {
-                            if(!silk.abort.get()){
-                                silk.before.run();
-                                silk.trigger.run();
-                                silk.after.run();
-                            }else{
-                                if(!silk.team.cores().isEmpty()) silk.team.core().items.add(silk.requirements, state.rules.buildCostMultiplier);
-                            }
-                            silk.removed.run();
+                            Core.app.post(() -> {
+                                if(!silk.abort.get()){
+                                    silk.before.run();
+                                    silk.trigger.run();
+                                    silk.after.run();
+                                }else{
+                                    if(!silk.team.cores().isEmpty()) silk.team.core().items.add(silk.requirements, state.rules.buildCostMultiplier);
+                                }
+                                silk.removed.run();
+                            });
                         };
                     }
                 });
