@@ -27,6 +27,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.*;
@@ -146,8 +147,6 @@ public class Block extends BlockStorage{
     public boolean alwaysUnlocked = false;
     /** What this block can merge into */
     public Prov<Block> upscale;
-    public Func<Tile, Block> upgrade;
-    public Func<Tile, Float> sandwiches = t -> 0f;
     public Prov<Block> downgrade;
 
     protected TextureRegion[] cacheRegions = {};
@@ -926,13 +925,6 @@ public class Block extends BlockStorage{
         Arrays.sort(requirements, Structs.comparingInt(i -> i.item.id));
     }
 
-    public void upgrade(Tile tile){
-        if(upgrade == null || upgrade.get(tile) == null) return;
-
-        tile.constructNet(upgrade.get(tile), tile.getTeam(), tile.rotation);
-        tile.block.placed(tile);
-    }
-
     public void share(Tile tile){
         if(!Nydus.rtg_generator_sharing.active()) return;
         if(!tile.entity.timer.get(timerShare, 60)) return;
@@ -958,6 +950,10 @@ public class Block extends BlockStorage{
     }
 
     public void unloaded(Tile tile, Item item, Tile other){
+        //
+    }
+
+    public void silk(Tile tile, Cons<Silk> cons){
         //
     }
 }

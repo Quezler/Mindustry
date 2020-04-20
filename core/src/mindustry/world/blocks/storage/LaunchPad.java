@@ -18,6 +18,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -95,19 +96,29 @@ public class LaunchPad extends StorageBlock{
         }
 
         if(Nydus.launchpad_upgrading.active()){
-            if(entity.timer.get(timerSilo, 60 * 4f) && entity.cons.valid()){
-                Core.app.post(() -> {
-                    Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
-                    Array<Tile> awaiting = coreBarrage.upgradable(tile.getTeam());
-                    if(awaiting.isEmpty()) return;
-                    awaiting.sort(t -> t.block.sandwiches.get(t));
-                    for(int i = 0; i < itemCapacity / 5; ++i){
-                        if(awaiting.isEmpty()) return;
-                        Tile other = awaiting.pop();
-                        if(other == null || coreBarrage.pending.containsKey(other)) continue;
-                        coreBarrage.fire(tile, other);
-                    }
-                });
+            if(entity.timer.get(timerSilo, 60 * 0.5f) && entity.cons.valid()){
+                Array<Silk> passed = spiderSilk.silky
+                .select(s -> s.team == tile.getTeam())
+                .select(s -> tile.entity.items.has(s.requirements, state.rules.buildCostMultiplier * 11))
+                .select(s -> s.footprint().count(t -> spiderSilk.reserved.contains(t.pos())) == 0)
+                .select(s ->!s.abort.get());
+
+                if(!passed.isEmpty()){
+                    Silk silk = passed.first();
+                    Bullet bullet = spiderSilk.bullet(spiderSilk.bullets.random(), tile, silk.tile);
+                    silk.added.run();
+                    tile.entity.items.sub(silk.requirements, state.rules.buildCostMultiplier);
+                    bullet.deathrattle = b -> {
+                        if(!silk.abort.get()){
+                            silk.before.run();
+                            silk.trigger.run();
+                            silk.after.run();
+                        }else{
+                            if(!silk.team.cores().isEmpty()) silk.team.core().items.add(silk.requirements, state.rules.buildCostMultiplier);
+                        }
+                        silk.removed.run();
+                    };
+                }
             }
         }
     }

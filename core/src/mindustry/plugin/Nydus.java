@@ -33,14 +33,11 @@ public enum Nydus{
     free_phase_forcefield(() -> true, "#overdrive-projector forcefields get free #phase-fabric phase when {surrounded} by #phase-wall phase walls"),
 
     duo_yeeter(() -> true, "#duo duo turrets can {lob} #copper-walls copper walls at the enemy"),
-    combustible_combustion(() -> true, "#combustion-generator combustion generators {explode} when you give them #coal coal"),
     repairpoint_wololoo(() -> true, "#repair-point getting close to an enemy repair point {switches your team}"),
-    thanos_junction_snap(() -> true, "#junction junctions that aren't in use {vanish} over time"),
 
     draug_home_isolation(() -> true, "#draug-factory miner drones work from home due to {corona}"),
 
     zombies_on_your_lawn(() -> true, "#solar-panel-large large solar panels have #phase-fabric {phasosynthesis}"),
-    dyson_sphere(() -> true, "#differential-generator differential generators {can take heat} from #solar-panel-large large solar panels"),
     a_cover_is_not_the_book(() -> true, "#rock rocks tend to have something {hidden} under them"),
     launchpad_upgrading(() -> true, "#launch-pad a launch pad can {upgrade blocks automatically} for your team"),
     water_from_the_nile(() -> true, "#water {water from the nile} gives free water to some blocks");

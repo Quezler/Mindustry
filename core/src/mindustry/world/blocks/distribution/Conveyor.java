@@ -8,11 +8,14 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.ArcAnnotate.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -379,6 +382,33 @@ public class Conveyor extends Block implements Autotiler{
                     ys[i] = y;
                 }
             }
+        }
+    }
+
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        if(tile.block == Blocks.conveyor){
+            cons.get(new Silk(tile){{
+                requirements = Blocks.titaniumConveyor.requirements;
+                trigger = () -> construct(Blocks.titaniumConveyor);
+            }});
+        }
+
+        if(tile.block == Blocks.titaniumConveyor && Units.closest(tile.getTeam(), tile.drawx(), tile.drawy(), tilesize * 22, u -> u instanceof Player) == null){
+            requests.clear();
+            requests.add(new BuildRequest(tile.x, tile.y, tile.rotation, Blocks.armoredConveyor));
+
+            int[] bits = ((ArmoredConveyor)Blocks.armoredConveyor).getTiling(requests.first(), requests);
+            if(bits == null) return;
+
+            if(tile.<ConveyorEntity>ent().blendbits != bits[0]) return;
+            if(tile.<ConveyorEntity>ent().blendsclx != bits[1]) return;
+            if(tile.<ConveyorEntity>ent().blendscly != bits[2]) return;
+
+            cons.get(new Silk(tile){{
+                requirements = Blocks.armoredConveyor.requirements;
+                trigger = () -> construct(Blocks.armoredConveyor);
+            }});
         }
     }
 }

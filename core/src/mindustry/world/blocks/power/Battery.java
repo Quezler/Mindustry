@@ -1,10 +1,14 @@
 package mindustry.world.blocks.power;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 
 import static mindustry.Vars.*;
 
@@ -39,6 +43,28 @@ public class Battery extends PowerDistributor{
         if(Nydus.single_use_batteries.active()){
             tile.entity.power.status = 0.1f;
             netServer.titanic.add(tile);
+        }
+    }
+
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        if(tile.block == Blocks.battery){
+            if(tile.getAroundTiles(new Array<>()).count(i -> i.block == Blocks.air || i.block == Blocks.battery || i.block instanceof StaticWall) == 8){
+
+                float aligned =
+                (tile.getNearby(+3, +0) != null && tile.getNearby(+3, +0).block == Blocks.batteryLarge ? 1f : 0f) +
+                (tile.getNearby(-3, -0) != null && tile.getNearby(-3, -0).block == Blocks.batteryLarge ? 1f : 0f) +
+                (tile.getNearby(+0, +3) != null && tile.getNearby(+0, +3).block == Blocks.batteryLarge ? 1f : 0f) +
+                (tile.getNearby(-0, -3) != null && tile.getNearby(-0, -3).block == Blocks.batteryLarge ? 1f : 0f);
+
+                if(aligned > 0f){
+                    cons.get(new Silk(tile){{
+                        requirements = Blocks.batteryLarge.requirements;
+                        trigger = () -> construct(Blocks.batteryLarge);
+                        size = 3;
+                    }});
+                }
+            }
         }
     }
 }

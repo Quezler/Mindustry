@@ -27,6 +27,7 @@ import mindustry.net.*;
 import mindustry.plugin.*;
 import mindustry.plugin.coreprotect.*;
 import mindustry.plugin.spiderchat.*;
+import mindustry.plugin.spidersilk.*;
 import mindustry.plugin.spiderweb.SpiderWeb;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.ForceProjector.*;
@@ -185,7 +186,7 @@ public class Vars implements Loadable{
     public static CoreProtect coreProtect;
     public static SpiderChat spiderChat;
     public static SpiderWeb spiderweb;
-    public static CoreBarrage coreBarrage;
+    public static SpiderSilk spiderSilk;
 
     public static Entities entities;
     public static EntityGroup<Player> playerGroup;

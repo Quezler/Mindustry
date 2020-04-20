@@ -8,11 +8,19 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.distribution.Conveyor.*;
+
+import java.io.*;
+
+import static mindustry.Vars.*;
 
 public class Conduit extends LiquidBlock implements Autotiler{
     public final int timerFlow = timers++;
@@ -133,5 +141,30 @@ public class Conduit extends LiquidBlock implements Autotiler{
         public float smoothLiquid;
 
         public int blendbits;
+    }
+
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        if(tile.block == Blocks.conduit){
+            cons.get(new Silk(tile){{
+                requirements = Blocks.pulseConduit.requirements;
+                trigger = () -> construct(Blocks.pulseConduit);
+            }});
+        }
+
+        if(tile.block == Blocks.pulseConduit && Units.closest(tile.getTeam(), tile.drawx(), tile.drawy(), tilesize * 22, u -> u instanceof Player) == null){
+            requests.clear();
+            requests.add(new BuildRequest(tile.x, tile.y, tile.rotation, Blocks.platedConduit));
+
+            int[] bits = ((ArmoredConduit)Blocks.platedConduit).getTiling(requests.first(), requests);
+            if(bits == null) return;
+
+            if(tile.<ConduitEntity>ent().blendbits != bits[0]) return;
+
+            cons.get(new Silk(tile){{
+                requirements = Blocks.platedConduit.requirements;
+                trigger = () -> construct(Blocks.platedConduit);
+            }});
+        }
     }
 }

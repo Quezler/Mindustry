@@ -1,6 +1,7 @@
 package mindustry.world.blocks.production;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -13,6 +14,7 @@ import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -338,4 +340,11 @@ public class Drill extends Block{
         public Item dominantItem;
     }
 
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        if(tile.block == Blocks.mechanicalDrill) cons.get(new Silk(tile){{
+            requirements = Blocks.pneumaticDrill.requirements;
+            trigger = () -> construct(Blocks.pneumaticDrill);
+        }});
+    }
 }

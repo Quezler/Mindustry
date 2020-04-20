@@ -1,6 +1,7 @@
 package mindustry.content;
 
 import arc.*;
+import arc.func.*;
 import arc.struct.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -14,13 +15,13 @@ import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.distribution.Conveyor.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.power.*;
@@ -31,8 +32,6 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import mindustry.world.modules.*;
-
-import static mindustry.world.meta.BlockFlag.*;
 
 public class Blocks implements ContentList{
     public static Block
@@ -85,8 +84,6 @@ public class Blocks implements ContentList{
 
     //upgrades
     dartPad, deltaPad, tauPad, omegaPad, javelinPad, tridentPad, glaivePad;
-
-    Array<BuildRequest> requests = new Array<>();
 
     @Override
     public void load(){
@@ -746,27 +743,22 @@ public class Blocks implements ContentList{
             requirements(Category.defense, ItemStack.with(Items.copper, 6));
             health = 80 * wallHealthMultiplier;
 
-            flags = EnumSet.of(BlockFlag.scalable, BlockFlag.upgradable);
+            flags = EnumSet.of(BlockFlag.scalable);
             upscale = () -> copperWallLarge;
-            upgrade = t -> titaniumWall;
         }};
 
         copperWallLarge = new Wall("copper-wall-large"){{
             requirements(Category.defense, ItemStack.mult(copperWall.requirements, 4));
             health = 80 * 4 * wallHealthMultiplier;
             size = 2;
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> titaniumWallLarge;
         }};
 
         titaniumWall = new Wall("titanium-wall"){{
             requirements(Category.defense, ItemStack.with(Items.titanium, 6));
             health = 110 * wallHealthMultiplier;
 
-            flags = EnumSet.of(BlockFlag.scalable, BlockFlag.upgradable);
+            flags = EnumSet.of(BlockFlag.scalable);
             upscale = () -> titaniumWallLarge;
-            upgrade = t -> thoriumWall;
             downgrade = () -> copperWall;
         }};
 
@@ -775,8 +767,6 @@ public class Blocks implements ContentList{
             health = 110 * wallHealthMultiplier * 4;
             size = 2;
 
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> thoriumWallLarge;
             downgrade = () -> copperWallLarge;
         }};
 
@@ -800,9 +790,8 @@ public class Blocks implements ContentList{
             requirements(Category.defense, ItemStack.with(Items.thorium, 6));
             health = 200 * wallHealthMultiplier;
 
-            flags = EnumSet.of(BlockFlag.scalable, BlockFlag.upgradable);
+            flags = EnumSet.of(BlockFlag.scalable);
             upscale = () -> thoriumWallLarge;
-            upgrade = t -> surgeWall;
             downgrade = () -> titaniumWall;
         }};
 
@@ -811,8 +800,6 @@ public class Blocks implements ContentList{
             health = 200 * wallHealthMultiplier * 4;
             size = 2;
 
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> surgeWallLarge;
             downgrade = () -> titaniumWallLarge;
         }};
 
@@ -949,10 +936,6 @@ public class Blocks implements ContentList{
             health = 45;
             speed = 0.03f;
             displayedSpeed = 4.2f;
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> titaniumConveyor;
-            sandwiches = t -> (float)t.<ConveyorEntity>ent().items.total();
         }};
 
         titaniumConveyor = new Conveyor("titanium-conveyor"){{
@@ -960,24 +943,8 @@ public class Blocks implements ContentList{
             health = 65;
             speed = 0.08f;
             displayedSpeed = 10f;
+
             downgrade = () -> conveyor;
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> {
-                requests.clear();
-                requests.add(new BuildRequest(t.x, t.y, t.rotation, armoredConveyor));
-
-                int[] bits = ((ArmoredConveyor)armoredConveyor).getTiling(requests.first(), requests);
-                if(bits == null) return null;
-
-                if(t.<ConveyorEntity>ent().blendbits != bits[0]) return null;
-                if(t.<ConveyorEntity>ent().blendsclx != bits[1]) return null;
-                if(t.<ConveyorEntity>ent().blendscly != bits[2]) return null;
-
-                return armoredConveyor;
-            };
-
-            sandwiches = t -> 1f - t.entity.healthf();
         }};
 
         armoredConveyor = new ArmoredConveyor("armored-conveyor"){{
@@ -985,6 +952,7 @@ public class Blocks implements ContentList{
             health = 180;
             speed = 0.08f;
             displayedSpeed = 10f;
+
             downgrade = () -> titaniumConveyor;
         }};
 
@@ -994,8 +962,6 @@ public class Blocks implements ContentList{
             capacity = 12;
             health = 30;
             buildCostMultiplier = 6f;
-
-            flags = EnumSet.of(BlockFlag.junction);
         }};
 
         itemBridge = new BufferedItemBridge("bridge-conveyor"){{
@@ -1003,9 +969,6 @@ public class Blocks implements ContentList{
             range = 4;
             speed = 70f;
             bufferCapacity = 14;
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> phaseConveyor;
         }};
 
         phaseConveyor = new ItemBridge("phase-conveyor"){{
@@ -1089,9 +1052,6 @@ public class Blocks implements ContentList{
         conduit = new Conduit("conduit"){{
             requirements(Category.liquid, ItemStack.with(Items.metaglass, 1));
             health = 45;
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> pulseConduit;
         }};
 
         pulseConduit = new Conduit("pulse-conduit"){{
@@ -1099,21 +1059,8 @@ public class Blocks implements ContentList{
             liquidCapacity = 16f;
             liquidPressure = 1.025f;
             health = 90;
+
             downgrade = () -> conduit;
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> {
-                requests.clear();
-                requests.add(new BuildRequest(t.x, t.y, t.rotation, platedConduit));
-
-                int[] bits = ((ArmoredConduit)platedConduit).getTiling(requests.first(), requests);
-                if(bits == null) return null;
-
-                if(t.<ConduitEntity>ent().blendbits != bits[0]) return null;
-
-                return platedConduit;
-            };
-            sandwiches = t -> 1f - t.entity.healthf();
         }};
 
         platedConduit = new ArmoredConduit("plated-conduit"){{
@@ -1121,7 +1068,6 @@ public class Blocks implements ContentList{
             liquidCapacity = 16f;
             liquidPressure = 1.025f;
             health = 220;
-            sandwiches = t -> 1f - t.entity.healthf();
         }};
 
         liquidRouter = new LiquidRouter("liquid-router"){{
@@ -1147,9 +1093,6 @@ public class Blocks implements ContentList{
             requirements(Category.liquid, ItemStack.with(Items.graphite, 4, Items.metaglass, 8));
             range = 4;
             hasPower = false;
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> phaseConduit;
         }};
 
         phaseConduit = new LiquidBridge("phase-conduit"){{
@@ -1190,16 +1133,6 @@ public class Blocks implements ContentList{
         battery = new Battery("battery"){{
             requirements(Category.power, ItemStack.with(Items.copper, 4, Items.lead, 20));
             consumes.powerBuffered(4000f);
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> t.getAroundTiles(new Array<>()).count(i -> i.block == air || i.block == battery || i.block instanceof StaticWall) == 8 ? batteryLarge : null;
-            sandwiches = t -> {
-                return
-                (t.getNearby(+3, +0) != null && t.getNearby(+3, +0).block == batteryLarge ? 1f : 0f) +
-                (t.getNearby(-3, -0) != null && t.getNearby(-3, -0).block == batteryLarge ? 1f : 0f) +
-                (t.getNearby(+0, +3) != null && t.getNearby(+0, +3).block == batteryLarge ? 1f : 0f) +
-                (t.getNearby(-0, -3) != null && t.getNearby(-0, -3).block == batteryLarge ? 1f : 0f);
-            };
         }};
 
         batteryLarge = new Battery("battery-large"){{
@@ -1212,9 +1145,15 @@ public class Blocks implements ContentList{
             requirements(Category.power, ItemStack.with(Items.copper, 25, Items.lead, 15));
             powerProduction = 1f;
             itemDuration = 120f;
-
-            rebuildable = false;
-        }};
+        }
+            @Override
+            public void silk(Tile tile, Cons<Silk> cons){
+                cons.get(new Silk(tile){{
+                    requirements = air.requirements;
+                    trigger = () -> tile.deconstructNet();
+                }});
+            }
+        };
 
         thermalGenerator = new ThermalGenerator("thermal-generator"){{
             requirements(Category.power, ItemStack.with(Items.copper, 40, Items.graphite, 35, Items.lead, 50, Items.silicon, 35, Items.metaglass, 40));
@@ -1254,16 +1193,6 @@ public class Blocks implements ContentList{
         solarPanel = new SolarGenerator("solar-panel"){{
             requirements(Category.power, ItemStack.with(Items.lead, 10, Items.silicon, 15));
             powerProduction = 0.06f;
-
-            flags = EnumSet.of(BlockFlag.upgradable, BlockFlag.solar);
-            upgrade = t -> t.getAroundTiles(new Array<>()).count(i -> i.block == air || i.block == solarPanel || i.block instanceof StaticWall) == 8 ? largeSolarPanel : null;
-            sandwiches = t -> {
-                return
-                (t.getNearby(+3, +0) != null && t.getNearby(+3, +0).block == largeSolarPanel ? 1f : 0f) +
-                (t.getNearby(-3, -0) != null && t.getNearby(-3, -0).block == largeSolarPanel ? 1f : 0f) +
-                (t.getNearby(+0, +3) != null && t.getNearby(+0, +3).block == largeSolarPanel ? 1f : 0f) +
-                (t.getNearby(-0, -3) != null && t.getNearby(-0, -3).block == largeSolarPanel ? 1f : 0f);
-            };
         }};
 
         largeSolarPanel = new SolarGenerator("solar-panel-large"){{
@@ -1304,10 +1233,6 @@ public class Blocks implements ContentList{
             size = 2;
             drawMineItem = true;
             consumes.liquid(Liquids.water, 0.05f).boost();
-
-            flags = EnumSet.of(BlockFlag.upgradable);
-            upgrade = t -> pneumaticDrill;
-            sandwiches = t -> t.<DrillEntity>ent().dominantItem == Items.coal ? 10f : 0f;
         }};
 
         pneumaticDrill = new Drill("pneumatic-drill"){{
@@ -1317,8 +1242,6 @@ public class Blocks implements ContentList{
             size = 2;
             drawMineItem = true;
             consumes.liquid(Liquids.water, 0.06f).boost();
-
-            downgrade = () -> mechanicalDrill;
         }};
 
         laserDrill = new Drill("laser-drill"){{

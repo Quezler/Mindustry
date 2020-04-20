@@ -1,9 +1,13 @@
 package mindustry.world.blocks.defense;
 
 import arc.Core;
+import arc.func.*;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.struct.*;
+import mindustry.content.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.meta.BlockGroup;
@@ -11,13 +15,28 @@ import mindustry.world.meta.BlockGroup;
 public class Wall extends Block{
     public int variants = 0;
 
+    private ObjectMap<Block, Block> upgradeMap = new ObjectMap<>();
+
     public Wall(String name){
         super(name);
         solid = true;
         destructible = true;
         group = BlockGroup.walls;
         buildCostMultiplier = 5f;
-        sandwiches = t -> -1f;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        upgradeMap.put(Blocks.copperWall,        Blocks.titaniumWall);
+        upgradeMap.put(Blocks.copperWallLarge,   Blocks.titaniumWallLarge);
+
+        upgradeMap.put(Blocks.titaniumWall,      Blocks.thoriumWall);
+        upgradeMap.put(Blocks.titaniumWallLarge, Blocks.thoriumWallLarge);
+
+        upgradeMap.put(Blocks.thoriumWall,       Blocks.surgeWall);
+        upgradeMap.put(Blocks.thoriumWallLarge,  Blocks.surgeWallLarge);
     }
 
     @Override
@@ -51,5 +70,15 @@ public class Wall extends Block{
     @Override
     public boolean canReplace(Block other){
         return super.canReplace(other) && health > other.health;
+    }
+
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        upgradeMap.each((from, to) -> {
+            if(tile.block == from) cons.get(new Silk(tile){{
+                requirements = to.requirements;
+                trigger = () -> construct(to);
+            }});
+        });
     }
 }

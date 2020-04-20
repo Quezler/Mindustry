@@ -15,6 +15,7 @@ import mindustry.net.Net;
 import mindustry.net.*;
 import mindustry.plugin.*;
 import mindustry.plugin.coreprotect.*;
+import mindustry.plugin.spidersilk.*;
 import mindustry.server.nydus.*;
 
 import java.time.*;
@@ -80,7 +81,7 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(logic = new Logic());
         Core.app.addListener(netServer = new NetServer());
         Core.app.addListener(coreProtect = new CoreProtect());
-        Core.app.addListener(coreBarrage = new CoreBarrage());
+        Core.app.addListener(spiderSilk = new SpiderSilk());
         Core.app.addListener(new ServerControl(args));
         Core.app.addListener(new BlockUpscaler());
         Core.app.addListener(new EmojiFilter());
@@ -89,7 +90,6 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(spiderweb);
         Core.app.addListener(new SiliconValley());
 
-        Core.app.addListener(new JunctionYeeter());
         Core.app.addListener(new NileWater());
         Core.app.addListener(new LavaBender());
 

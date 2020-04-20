@@ -1,7 +1,6 @@
 package mindustry.world.blocks;
 
 import arc.*;
-import arc.struct.*;
 import mindustry.annotations.Annotations.*;
 import arc.Graphics.*;
 import arc.Graphics.Cursor.*;
@@ -23,7 +22,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
-import mindustry.world.meta.*;
 import mindustry.world.modules.*;
 
 import java.io.*;
@@ -52,9 +50,6 @@ public class BuildBlock extends Block{
         solidifes = true;
         entityType = BuildEntity::new;
         sync = true;
-
-        flags = EnumSet.of(BlockFlag.upgradable);
-        upgrade = t -> t.<BuildEntity>ent().cblock;
 
         buildBlocks[size - 1] = this;
     }
