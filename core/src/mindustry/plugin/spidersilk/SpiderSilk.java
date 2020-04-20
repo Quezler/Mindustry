@@ -42,7 +42,7 @@ public class SpiderSilk implements ApplicationListener{
     @Override
     public void update(){
         if(!state.is(State.playing)) return;
-        if(!timer.get(0, 60f * 10f)) return;
+        if(!timer.get(0, 60f * 2.5f)) return;
         rescan();
     }
 

@@ -3,6 +3,7 @@ package mindustry.world.blocks.power;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.plugin.*;
@@ -67,15 +68,17 @@ public class Battery extends PowerDistributor{
             }
         }
 
-        tile.getLinkedTilesAs(size + 2, tempTiles).each(t -> {
-            if(Build.validPlace(tile.getTeam(), t.x, t.y, Blocks.battery, 0)){
-                Tile daddy = tile;
-                cons.get(new Silk(t){{
-                    requirements = Blocks.battery.requirements;
-                    trigger = () -> construct(Blocks.battery);
-                    team = daddy.getTeam();
-                }});
-            }
-        });
+        if(Mathf.equal(tile.entity.power.status, 1f, 0.001f)){
+            tile.getLinkedTilesAs(size + 2, tempTiles).each(t -> {
+                if(Build.validPlace(tile.getTeam(), t.x, t.y, Blocks.battery, 0)){
+                    Tile daddy = tile;
+                    cons.get(new Silk(t){{
+                        requirements = Blocks.battery.requirements;
+                        trigger = () -> construct(Blocks.battery);
+                        team = daddy.getTeam();
+                    }});
+                }
+            });
+        }
     }
 }
