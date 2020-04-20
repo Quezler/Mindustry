@@ -17,11 +17,7 @@ public class LavaBender implements ApplicationListener{
                     Tile tile = world.rawTile(x, y);
 
                     if(tile.block == Blocks.rock){
-                        if(Mathf.randomBoolean()){
-                            tile.setFloor(Blocks.hotrock.asFloor());
-                        }else{
-                            tile.setFloor(Blocks.magmarock.asFloor());
-                        }
+                        tile.setOverlay(Blocks.oreCoal);
                     }
 
                     if(tile.block == Blocks.sandBoulder){
