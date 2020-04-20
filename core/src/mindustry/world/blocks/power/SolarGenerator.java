@@ -3,6 +3,7 @@ package mindustry.world.blocks.power;
 import arc.func.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.plugin.*;
@@ -59,5 +60,26 @@ public class SolarGenerator extends PowerGenerator{
                 }
             }
         }
+
+        if(tile.block == Blocks.largeSolarPanel){
+            Tile daddy = tile;
+            aligned(tile, t -> {
+                if(t.getLinkedTilesAs(3, new Array<>()).count(i -> i.block == Blocks.air || i.block == Blocks.solarPanel || i.block instanceof StaticWall) == 9){
+                    cons.get(new Silk(t){{
+                        requirements = Blocks.largeSolarPanel.requirements;
+                        trigger = () -> construct(Blocks.largeSolarPanel);
+                        team = daddy.getTeam();
+                        size = 3;
+                    }});
+                }
+            });
+        }
+    }
+
+    private void aligned(Tile tile, Cons<Tile> cons){
+        if(tile.getNearby(+3, +0) != null) cons.get(tile.getNearby(+3, +0));
+        if(tile.getNearby(-3, -0) != null) cons.get(tile.getNearby(-3, -0));
+        if(tile.getNearby(+0, +3) != null) cons.get(tile.getNearby(+0, +3));
+        if(tile.getNearby(-0, -3) != null) cons.get(tile.getNearby(-0, -3));
     }
 }
