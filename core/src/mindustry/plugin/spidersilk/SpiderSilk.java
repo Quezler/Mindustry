@@ -55,6 +55,7 @@ public class SpiderSilk implements ApplicationListener{
             }
         }
         silky.shuffle();
+        silky.sort(Silk::weight);
     }
 
     public Bullet bullet(BulletType type, Tile tile, Tile other){
@@ -104,6 +105,14 @@ public class SpiderSilk implements ApplicationListener{
 
         public Array<Tile> footprint(){
             return tile.getLinkedTilesAs(size, spiderSilk.tempTiles);
+        }
+
+        public int weight(){
+            int i = 0;
+            for(ItemStack is : requirements){
+                i += is.amount;
+            }
+            return i;
         }
     }
 }
