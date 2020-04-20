@@ -62,6 +62,7 @@ public class SpiderSilk implements ApplicationListener{
         }
         silky.shuffle();
         silky.sort(Silk::weight);
+        Log.info("launchpad: " + silky.size);
     }
 
     public Bullet bullet(BulletType type, Tile tile, Tile other){
