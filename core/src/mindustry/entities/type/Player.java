@@ -543,10 +543,6 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
             }
         });
 
-        if(lastSpawner != null && lastSpawner.isValid() && lastSpawner.getTile().block() instanceof MechPad){
-            if(lastSpawner.getTile().entity.power.status < 1f) applyEffect(StatusEffects.tarred, 60);
-        }
-
         if(!isFlying() && tile != null && Rock.boulders.contains(tile.block) && Nydus.do_you_want_to_build_a_snowman.active()){
             int dir = Mathf.floor((angleTo(tile) + 45) / 90);
             if(dir == 1) tile.left().constructNet(tile.block,  tile.getTeam(), (byte)0);
