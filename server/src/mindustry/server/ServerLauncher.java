@@ -3,6 +3,7 @@ package mindustry.server;
 import arc.*;
 import arc.backend.headless.*;
 import arc.files.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
@@ -17,6 +18,8 @@ import mindustry.plugin.*;
 import mindustry.plugin.coreprotect.*;
 import mindustry.plugin.spidersilk.*;
 import mindustry.server.nydus.*;
+import mindustry.world.*;
+import mindustry.world.blocks.*;
 
 import java.time.*;
 
@@ -91,7 +94,17 @@ public class ServerLauncher implements ApplicationListener{
         Core.app.addListener(new SiliconValley());
 
         Core.app.addListener(new NileWater());
-        Core.app.addListener(new LavaBender());
+
+        Array<Tile> tempTiles = new Array<>();
+        netServer.admins.addActionFilter(action -> {
+
+            if(Nydus.do_you_want_to_build_a_snowman.active()){
+                if(action.type == ActionType.breakBlock && Rock.boulders.contains(action.tile.block)) return false;
+                if(action.type == ActionType.placeBlock && action.tile.getLinkedTilesAs(action.block, tempTiles).count(t -> Rock.boulders.contains(t.block)) > 0) return false;
+            }
+
+            return true;
+        });
 
         mods.eachClass(Mod::init);
 

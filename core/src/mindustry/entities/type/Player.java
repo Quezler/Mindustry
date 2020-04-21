@@ -547,6 +547,15 @@ public class Player extends Unit implements BuilderMinerTrait, ShooterTrait{
             if(lastSpawner.getTile().entity.power.status < 1f) applyEffect(StatusEffects.tarred, 60);
         }
 
+        if(!isFlying() && tile != null && Rock.boulders.contains(tile.block) && Nydus.do_you_want_to_build_a_snowman.active()){
+            int dir = Mathf.floor((angleTo(tile) + 45) / 90);
+            if(dir == 1) tile.left().constructNet(tile.block,  tile.getTeam(), (byte)0);
+            if(dir == 0) tile.front().constructNet(tile.block, tile.getTeam(), (byte)0);
+            if(dir == 3) tile.right().constructNet(tile.block, tile.getTeam(), (byte)0);
+            if(dir == 2) tile.back().constructNet(tile.block,  tile.getTeam(), (byte)0);
+            tile.deconstructNet();
+        }
+
         boostHeat = Mathf.lerpDelta(boostHeat, (tile != null && tile.solid()) || (isBoosting && ((!movement.isZero() && moved) || !isLocal)) ? 1f : 0f, 0.08f);
         shootHeat = Mathf.lerpDelta(shootHeat, isShooting() ? 1f : 0f, 0.06f);
         mech.updateAlt(this); //updated regardless
