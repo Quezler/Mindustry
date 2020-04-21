@@ -100,7 +100,6 @@ public class ServerLauncher implements ApplicationListener{
 
             if(Nydus.do_you_want_to_build_a_snowman.active()){
                 if(action.type == ActionType.breakBlock && Rock.boulders.contains(action.tile.block)) return false;
-                if(action.type == ActionType.placeBlock && action.tile.getLinkedTilesAs(action.block, tempTiles).count(t -> Rock.boulders.contains(t.block)) > 0) return false;
             }
 
             return true;
