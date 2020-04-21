@@ -60,13 +60,21 @@ public class SolarGenerator extends PowerGenerator{
 
         tile.getLinkedTilesAs(size + 2, tempTiles).each(t -> {
             if(Build.validPlace(tile.getTeam(), t.x, t.y, Blocks.solarPanel, 0)){
-                Tile daddy = tile;
-                cons.get(new Silk(t){{
-                    requirements = Blocks.solarPanel.requirements;
-                    trigger = () -> construct(Blocks.solarPanel);
-                    team = daddy.getTeam();
-                    size = 5;
-                }});
+
+                float adjecent =
+                (t.getNearby(+1, +0) != null && t.getNearby(+1, +0).link().block instanceof SolarGenerator ? 1f : 0f) +
+                (t.getNearby(-1, -0) != null && t.getNearby(-1, -0).link().block instanceof SolarGenerator ? 1f : 0f) +
+                (t.getNearby(+0, +1) != null && t.getNearby(+0, +1).link().block instanceof SolarGenerator ? 1f : 0f) +
+                (t.getNearby(-0, -1) != null && t.getNearby(-0, -1).link().block instanceof SolarGenerator ? 1f : 0f);
+
+                if(adjecent >= 2f){
+                    Tile daddy = tile;
+                    cons.get(new Silk(t){{
+                        requirements = Blocks.solarPanel.requirements;
+                        trigger = () -> construct(Blocks.solarPanel);
+                        team = daddy.getTeam();
+                    }});
+                }
             }
         });
     }
