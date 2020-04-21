@@ -410,6 +410,7 @@ public class Conveyor extends Block implements Autotiler{
             cons.get(new Silk(tile){{
                 requirements = Blocks.armoredConveyor.requirements;
                 trigger = () -> construct(Blocks.armoredConveyor);
+                weightMultiplier = tile.getTeam().cores().isEmpty() ? 100f : 0.1f * state.teams.closestCore(tile.drawx(), tile.drawy(), tile.getTeam()).dst(tile);
             }});
         }
     }

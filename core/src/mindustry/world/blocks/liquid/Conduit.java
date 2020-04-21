@@ -166,6 +166,7 @@ public class Conduit extends LiquidBlock implements Autotiler{
             cons.get(new Silk(tile){{
                 requirements = Blocks.platedConduit.requirements;
                 trigger = () -> construct(Blocks.platedConduit);
+                weightMultiplier = tile.getTeam().cores().isEmpty() ? 100f : 0.1f * state.teams.closestCore(tile.drawx(), tile.drawy(), tile.getTeam()).dst(tile);
             }});
         }
     }
