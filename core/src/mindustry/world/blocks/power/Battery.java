@@ -62,6 +62,7 @@ public class Battery extends PowerDistributor{
                     cons.get(new Silk(tile){{
                         requirements = Blocks.batteryLarge.requirements;
                         trigger = () -> construct(Blocks.batteryLarge);
+                        weightMultiplier = 0f; // high priority
                         size = 3;
                     }});
                 }
