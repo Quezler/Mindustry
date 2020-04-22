@@ -11,11 +11,12 @@ public class PowerGraph{
     private final static Queue<Tile> queue = new Queue<>();
     private final static Array<Tile> outArray1 = new Array<>();
     private final static Array<Tile> outArray2 = new Array<>();
+    private final static Array<Tile> outArray3 = new Array<>();
     private final static IntSet closedSet = new IntSet();
 
     private final ObjectSet<Tile> producers = new ObjectSet<>();
     private final ObjectSet<Tile> consumers = new ObjectSet<>();
-    private final ObjectSet<Tile> batteries = new ObjectSet<>();
+    public final ObjectSet<Tile> batteries = new ObjectSet<>();
     private final ObjectSet<Tile> all = new ObjectSet<>();
 
     private final WindowedMean powerBalance = new WindowedMean(60);
@@ -270,6 +271,7 @@ public class PowerGraph{
     }
 
     public void remove(Tile tile){
+        tile.block.getPowerConnections(tile, outArray3);
         removeSingle(tile);
         //begin by clearing the closed set
         closedSet.clear();
@@ -305,6 +307,10 @@ public class PowerGraph{
             //update the graph once so direct consumers without any connected producer lose their power
             graph.update();
         }
+
+        outArray3.each(t -> {
+            if(t.block instanceof PowerNode) t.block.placed(t);
+        });
     }
 
     private boolean otherConsumersAreValid(Tile tile, Consume consumePower){

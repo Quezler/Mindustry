@@ -1,13 +1,16 @@
 package mindustry.world.blocks.defense;
 
-import arc.Core;
-import arc.struct.IntSet;
-import arc.graphics.Color;
+import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
-import arc.util.Time;
-import mindustry.entities.type.TileEntity;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.content.*;
+import mindustry.entities.type.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -110,6 +113,24 @@ public class OverdriveProjector extends Block{
                     }
                 }
             }
+
+            if(Nydus.free_phase_overdrive.active()){
+                if(entity.items.get(Items.phasefabric) <= 1){
+                    if(getAroundCount(tile, t -> t.block == Blocks.phaseWall || t.block == Blocks.phaseWallLarge) >= 12){
+                        entity.items.set(Items.phasefabric, 9);
+                        netServer.titanic.add(tile);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void unloaded(Tile tile, Item item, Tile other){
+        if(item == Items.phasefabric && Nydus.free_phase_overdrive.active()){
+            Core.app.post(() -> {
+                if(tile.entity != null) tile.entity.kill();
+            });
         }
     }
 

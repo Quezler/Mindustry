@@ -19,6 +19,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.net.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -45,8 +46,10 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
     protected final Statuses status = new Statuses();
     protected final ItemStack item = new ItemStack(content.item(0), 0);
 
-    protected Team team = Team.sharded;
+    public Team team = Team.sharded;
     protected float drownTime, hitTime;
+
+    private static final Array<Tile> deepWater = new Array<>();
 
     @Override
     public boolean collidesGrid(int x, int y){
@@ -318,6 +321,31 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
                 damage(health + 1);
                 if(this == player){
                     Events.fire(Trigger.drown);
+                }
+
+                if(this instanceof Player && Nydus.landfill_on_drowning.active()){
+                    deepWater.clear();
+                    for(int x = 0; x < world.width(); x++){
+                        for(int y = 0; y < world.height(); y++){
+                            Tile t = world.tile(x, y);
+                            if(t.floor() == Blocks.deepwater.asFloor() && dst(t) <= tilesize * 8) deepWater.add(t);
+                        }
+                    }
+
+                    while(item.amount-- > 0){
+                        Tile deep = Geometry.findClosest(x, y, deepWater);
+                        if(deep != null){
+                            deepWater.remove(deep);
+                            deep.setFloor(Blocks.sandWater.asFloor());
+                        }
+                    }
+
+                    kill();
+
+                    // todo, syncbeacons?
+                    Call.onWorldDataBegin(((Player)this).con);
+                    netServer.sendWorldData(((Player)this));
+                    ((Player)this).postSync();
                 }
             }
 

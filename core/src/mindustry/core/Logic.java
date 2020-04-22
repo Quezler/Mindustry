@@ -16,6 +16,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.BuildBlock.*;
+import mindustry.world.blocks.units.*;
 
 import java.util.*;
 
@@ -125,6 +126,9 @@ public class Logic implements ApplicationListener{
         state.teams = new Teams();
         state.rules = new Rules();
         state.stats = new Stats();
+
+        coreProtect.reset();
+        MechPad.coco.clear();
 
         entities.clear();
         Time.clear();

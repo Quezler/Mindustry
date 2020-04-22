@@ -1,8 +1,8 @@
 package mindustry.world.blocks.units;
 
 import arc.*;
+import arc.struct.*;
 import mindustry.annotations.Annotations.*;
-import arc.struct.EnumSet;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -27,6 +27,8 @@ import static mindustry.Vars.*;
 public class MechPad extends Block{
     public @NonNull Mech mech;
     public float buildTime = 60 * 5;
+
+    public static ObjectMap<String, SpawnerTrait> coco = new ObjectMap<>();
 
     public MechPad(String name){
         super(name);
@@ -75,6 +77,8 @@ public class MechPad extends Block{
         entity.player.onRespawn(tile);
         if(resetSpawner) entity.player.lastSpawner = null;
         entity.player = null;
+
+        coco.put(player.uuid, player.lastSpawner);
 
         Events.fire(new MechChangeEvent(player, player.mech));
     }

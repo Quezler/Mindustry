@@ -43,6 +43,7 @@ public class MassDriver extends Block{
         hasPower = true;
         outlineIcon = true;
         entityType = MassDriverEntity::new;
+        sync = true;
     }
 
     @Override

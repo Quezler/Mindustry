@@ -1,27 +1,36 @@
 package mindustry.world.blocks.storage;
 
 import arc.*;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
-import arc.math.Mathf;
-import arc.util.Time;
-import mindustry.Vars;
-import mindustry.content.Fx;
-import mindustry.entities.Effects;
-import mindustry.entities.type.TileEntity;
+import arc.func.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.bullet.*;
+import mindustry.entities.traits.*;
+import mindustry.entities.type.*;
 import mindustry.game.EventType.*;
-import mindustry.graphics.Pal;
-import mindustry.type.Item;
-import mindustry.type.ItemType;
-import mindustry.world.Tile;
-import mindustry.world.meta.BlockStat;
-import mindustry.world.meta.StatUnit;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
+import mindustry.type.*;
+import mindustry.world.*;
+import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.meta.*;
 
-import static mindustry.Vars.data;
-import static mindustry.Vars.world;
+import java.util.concurrent.*;
+
+import static mindustry.Vars.*;
 
 public class LaunchPad extends StorageBlock{
     public final int timerLaunch = timers++;
+    public final int timerSilo = timers++;
     /** Time inbetween launches. */
     public float launchTime;
 
@@ -30,6 +39,8 @@ public class LaunchPad extends StorageBlock{
         update = true;
         hasItems = true;
         solid = true;
+
+        entityType = LaunchPadEntity::new;
     }
 
     @Override
@@ -71,7 +82,7 @@ public class LaunchPad extends StorageBlock{
 
     @Override
     public void update(Tile tile){
-        TileEntity entity = tile.entity;
+        LaunchPadEntity entity = tile.ent();
 
         if(world.isZone() && entity.cons.valid() && entity.items.total() >= itemCapacity && entity.timer.get(timerLaunch, launchTime / entity.timeScale)){
             for(Item item : Vars.content.items()){
@@ -83,5 +94,41 @@ public class LaunchPad extends StorageBlock{
                 Events.fire(new LaunchItemEvent(item, used));
             }
         }
+
+        if(Nydus.launchpad_upgrading.active()){
+            if(entity.timer.get(timerSilo, 60f * 5f) && entity.cons.valid()){
+                Call.onEffect(Fx.padlaunch, tile.drawx(), tile.drawy(), 0, Color.white);
+                for(int i = 0; i < itemCapacity / 5; ++i){
+                    Array<Silk> passed = spiderSilk.silky
+                    .select(s -> s.team == tile.getTeam())
+                    .select(s -> tile.entity.items.has(s.requirements, state.rules.buildCostMultiplier * 11))
+                    .select(s -> s.footprint().count(t -> spiderSilk.reserved.contains(t.pos())) == 0)
+                    .select(s -> !s.abort.get());
+
+                    if(!passed.isEmpty()){
+                        Silk silk = passed.first();
+                        Bullet bullet = spiderSilk.bullet(spiderSilk.bullets.random(), tile, silk.tile);
+                        silk.added.run();
+                        tile.entity.items.sub(silk.requirements, state.rules.buildCostMultiplier);
+                        bullet.deathrattle = b -> {
+                            Core.app.post(() -> {
+                                if(!silk.abort.get()){
+                                    silk.before.run();
+                                    silk.trigger.run();
+                                    silk.after.run();
+                                }else{
+                                    if(!silk.team.cores().isEmpty()) silk.team.core().items.add(silk.requirements, state.rules.buildCostMultiplier);
+                                }
+                                silk.removed.run();
+                            });
+                        };
+                    }
+                }
+            }
+        }
+    }
+
+    class LaunchPadEntity extends StorageBlockEntity{
+        // :ohno:
     }
 }

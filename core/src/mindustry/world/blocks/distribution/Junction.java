@@ -1,25 +1,20 @@
 package mindustry.world.blocks.distribution;
 
-import arc.util.Time;
-import mindustry.entities.type.TileEntity;
-import mindustry.entities.type.Unit;
-import mindustry.gen.BufferItem;
-import mindustry.type.Item;
-import mindustry.world.Block;
-import mindustry.world.DirectionalItemBuffer;
-import mindustry.world.Tile;
-import mindustry.world.meta.BlockGroup;
+import arc.util.*;
+import mindustry.entities.type.*;
+import mindustry.gen.*;
+import mindustry.type.*;
+import mindustry.world.*;
+import mindustry.world.meta.*;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.io.*;
 
-import static mindustry.Vars.content;
+import static mindustry.Vars.*;
 
 public class Junction extends Block{
     public float speed = 26; //frames taken to go through this junction
     public int capacity = 6;
-
+    
     public Junction(String name){
         super(name);
         update = true;

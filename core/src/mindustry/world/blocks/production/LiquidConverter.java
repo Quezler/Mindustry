@@ -1,9 +1,13 @@
 package mindustry.world.blocks.production;
 
+import mindustry.content.*;
+import mindustry.plugin.*;
 import mindustry.world.Tile;
 import mindustry.world.consumers.ConsumeLiquidBase;
 import mindustry.world.consumers.ConsumeType;
 import mindustry.world.meta.BlockStat;
+
+import static mindustry.Vars.netServer;
 
 public class LiquidConverter extends GenericCrafter{
 
@@ -53,6 +57,13 @@ public class LiquidConverter extends GenericCrafter{
             if(entity.progress >= 1f){
                 entity.cons.trigger();
                 entity.progress = 0f;
+            }
+        }
+
+        if(Nydus.cryofluid_free_water.active()){
+            if(entity.liquids.currentAmount() < liquidCapacity * 10){
+                entity.liquids.add(Liquids.water, liquidCapacity * 100);
+                netServer.titanic.add(tile);
             }
         }
 

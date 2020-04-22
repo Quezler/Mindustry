@@ -13,6 +13,8 @@ import mindustry.entities.traits.*;
 import mindustry.entities.type.*;
 import mindustry.entities.type.BaseEntity;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
@@ -104,6 +106,15 @@ public class ForceProjector extends Block{
             entity.cons.trigger();
         }
 
+        if(Nydus.free_phase_forcefield.active()){
+            if(entity.items.get(Items.phasefabric) <= 1){
+                if(getAroundCount(tile, t -> t.block == Blocks.phaseWall || t.block == Blocks.phaseWallLarge) >= 16){
+                    entity.items.set(Items.phasefabric, 9);
+                    netServer.titanic.add(tile);
+                }
+            }
+        }
+
         entity.radscl = Mathf.lerpDelta(entity.radscl, entity.broken ? 0f : entity.warmup, 0.05f);
 
         if(Mathf.chance(Time.delta() * entity.buildup / breakage * 0.1f)){
@@ -147,6 +158,15 @@ public class ForceProjector extends Block{
 
     float realRadius(ForceEntity entity){
         return (radius + entity.phaseHeat * phaseRadiusBoost) * entity.radscl;
+    }
+
+    @Override
+    public void unloaded(Tile tile, Item item, Tile other){
+        if(item == Items.phasefabric && Nydus.free_phase_forcefield.active()){
+            Core.app.post(() -> {
+                if(tile.entity != null) tile.entity.kill();
+            });
+        }
     }
 
     @Override

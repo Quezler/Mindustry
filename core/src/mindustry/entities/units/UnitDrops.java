@@ -1,48 +1,29 @@
 package mindustry.entities.units;
 
-import arc.math.Mathf;
-import mindustry.Vars;
-import mindustry.content.Items;
-import mindustry.entities.type.BaseUnit;
-import mindustry.entities.type.TileEntity;
-import mindustry.gen.Call;
-import mindustry.type.Item;
-import static mindustry.Vars.*;
+import arc.math.*;
+import mindustry.*;
+import mindustry.entities.type.*;
+import mindustry.gen.*;
+import mindustry.plugin.*;
+import mindustry.type.*;
 
 public class UnitDrops{
-    private static Item[] dropTable;
 
     public static void dropItems(BaseUnit unit){
-        //items only dropped in waves for enemy team
-        if(unit.getTeam() != state.rules.waveTeam || !Vars.state.rules.unitDrops){
-            return;
-        }
-
         TileEntity core = unit.getClosestEnemyCore();
 
-        if(core == null || core.dst(unit) > Vars.mineTransferRange){
-            return;
-        }
+        if(!Nydus.enemy_item_drops.active() || unit.item().amount == 0 || unit.item().item == null) return;
 
-        if(dropTable == null){
-            dropTable = new Item[]{Items.titanium, Items.silicon, Items.lead, Items.copper};
+        if(core != null && core.dst(unit) <= Vars.mineTransferRange * 3){
+            unit.item().amount = core.tile.block().acceptStack(unit.item().item, unit.item().amount, core.tile, null);
+            Call.transferItemTo(unit.item().item, unit.item().amount, unit.x + Mathf.range(2f), unit.y + Mathf.range(2f), core.tile);
         }
+    }
 
-        for(int i = 0; i < 3; i++){
-            for(Item item : dropTable){
-                //only drop unlocked items
-                if(!Vars.headless && !Vars.data.isUnlocked(item)){
-                    continue;
-                }
+    public static void seed(BaseUnit unit){
+        if(!Vars.state.rules.unitDrops) return;
 
-                if(Mathf.chance(0.03)){
-                    int amount = Mathf.random(20, 40);
-                    amount = core.tile.block().acceptStack(item, amount, core.tile, null);
-                    if(amount > 0){
-                        Call.transferItemTo(item, amount, unit.x + Mathf.range(2f), unit.y + Mathf.range(2f), core.tile);
-                    }
-                }
-            }
-        }
+        unit.item().item = Vars.content.items().select(i -> i.type == ItemType.material).random();
+        unit.item().amount = (int)(unit.maxHealth() / 50);
     }
 }

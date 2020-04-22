@@ -23,13 +23,15 @@ public class Tile implements Position, TargetTrait{
     /** Tile entity, usually null. */
     public TileEntity entity;
     public short x, y;
-    protected Block block;
+    public Block block;
     protected Floor floor;
     protected Floor overlay;
     /** Rotation, 0-3. Also used to store offload location, in which case it can be any number.*/
-    protected byte rotation;
+    public byte rotation;
     /** Team ordinal. */
-    protected byte team;
+    public byte team;
+
+    public int changed = 0;
 
     public Tile(int x, int y){
         this.x = (short)x;
@@ -221,9 +223,17 @@ public class Tile implements Position, TargetTrait{
         Call.removeTile(this);
     }
 
+    public void deconstructNet(){
+        Call.onDeconstructFinish(this, Blocks.air, -1);
+    }
+
     /** set()-s this tile, except it's synced across the network */
     public void setNet(Block block, Team team, int rotation){
         Call.setTile(this, block, team, rotation);
+    }
+
+    public void constructNet(Block block, Team team, byte rotation){
+        BuildBlock.constructed(this, block, -1, rotation, team, true);
     }
 
     public byte rotation(){
@@ -322,12 +332,16 @@ public class Tile implements Position, TargetTrait{
      * This array contains all linked tiles, including this tile itself.
      */
     public Array<Tile> getLinkedTilesAs(Block block, Array<Tile> tmpArray){
+        return getLinkedTilesAs(block.size, tmpArray);
+    }
+
+    public Array<Tile> getLinkedTilesAs(int size, Array<Tile> tmpArray){
         tmpArray.clear();
-        if(block.isMultiblock()){
-            int offsetx = -(block.size - 1) / 2;
-            int offsety = -(block.size - 1) / 2;
-            for(int dx = 0; dx < block.size; dx++){
-                for(int dy = 0; dy < block.size; dy++){
+        if(size > 1){
+            int offsetx = -(size - 1) / 2;
+            int offsety = -(size - 1) / 2;
+            for(int dx = 0; dx < size; dx++){
+                for(int dy = 0; dy < size; dy++){
                     Tile other = world.tile(x + dx + offsetx, y + dy + offsety);
                     if(other != null) tmpArray.add(other);
                 }
@@ -335,6 +349,22 @@ public class Tile implements Position, TargetTrait{
         }else{
             tmpArray.add(this);
         }
+        return tmpArray;
+    }
+
+    public Array<Tile> getAroundTiles(Array<Tile> tmpArray){
+        tmpArray.clear();
+
+        Point2[] nearby = Edges.getAroundEdges(block.size);
+        for(Point2 point : nearby){
+            if(point == null) continue;
+            Tile other = world.ltile(x + point.x, y + point.y);
+            if(other == null) continue;
+            if(tmpArray.contains(other)) continue;
+
+            tmpArray.add(other);
+        }
+
         return tmpArray;
     }
 
@@ -481,6 +511,8 @@ public class Tile implements Position, TargetTrait{
         updateOcclusion();
 
         world.notifyChanged(this);
+
+        changed++;
     }
 
     @Override
@@ -528,5 +560,13 @@ public class Tile implements Position, TargetTrait{
     @Remote(called = Loc.server)
     public static void setTile(Tile tile, Block block, Team team, int rotation){
         tile.set(block, team, rotation);
+    }
+
+    public boolean isBorder(){
+        return isBorder(3);
+    }
+
+    private boolean isBorder(int distance){
+        return x < distance || y < distance || x + distance >= world.width() || y + distance >= world.height();
     }
 }

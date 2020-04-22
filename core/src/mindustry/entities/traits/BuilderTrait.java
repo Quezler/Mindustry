@@ -14,6 +14,7 @@ import mindustry.entities.type.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.BuildBlock.*;
@@ -113,6 +114,21 @@ public interface BuilderTrait extends Entity, TeamTrait{
 
         current.stuck = Mathf.equal(current.progress, entity.progress);
         current.progress = entity.progress;
+
+        if(tile.block instanceof BuildBlock && !current.breaking && current.stuck && this instanceof Player){
+            if(entity.timer.get(((BuildBlock)tile.block).timerExcecutor, 60f - 2f) && core != null){
+                StringBuilder label = new StringBuilder();
+
+                if(entity.cblock.requirements == null) return;
+
+                for(int i = 0; i < entity.cblock.requirements.length; i++){
+                    if(!core.items.has(entity.cblock.requirements[i].item)) label.append((char)Fonts.getUnicode(entity.cblock.requirements[i].item.name));
+                    if(!core.items.has(entity.cblock.requirements[i].item)) label.append(" ");
+                }
+
+                if(!label.toString().equals("")) Call.onLabel(((Player)this).con, label.toString().trim(), 1f, entity.x, entity.y);
+            }
+        }
     }
 
     /** @return whether this request should be skipped, in favor of the next one. */
@@ -307,6 +323,8 @@ public interface BuilderTrait extends Entity, TeamTrait{
 
         /** Visual scale. Used only for rendering.*/
         public float animScale = 0f;
+
+        public Interval timer = new Interval();
 
         /** This creates a build request. */
         public BuildRequest(int x, int y, int rotation, Block block){

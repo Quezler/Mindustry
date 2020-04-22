@@ -1,16 +1,19 @@
 package mindustry.world.blocks.defense;
 
 import arc.*;
+import arc.util.*;
 import mindustry.annotations.Annotations.*;
 import arc.Graphics.*;
 import arc.Graphics.Cursor.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.Effects.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
+import mindustry.plugin.*;
 import mindustry.world.*;
 
 import java.io.*;
@@ -86,6 +89,8 @@ public class Door extends Wall{
         if((Units.anyEntities(tile) && entity.open) || !tile.entity.timer.get(timerToggle, 30f)){
             return;
         }
+
+        if(Nydus.cascading_doors.active()) Core.app.post(() -> entity.proximity().select(t -> t.block() instanceof Door).each(t -> t.block().tapped(t, null)));
 
         Call.onDoorToggle(null, tile, !entity.open);
     }

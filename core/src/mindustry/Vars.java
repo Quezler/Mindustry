@@ -24,6 +24,12 @@ import mindustry.maps.*;
 import mindustry.mod.*;
 import mindustry.net.Net;
 import mindustry.net.*;
+import mindustry.plugin.*;
+import mindustry.plugin.coreprotect.*;
+import mindustry.plugin.spiderchat.*;
+import mindustry.plugin.spidersilk.*;
+import mindustry.plugin.spiderweb.SpiderWeb;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.ForceProjector.*;
 
 import java.io.*;
@@ -177,6 +183,10 @@ public class Vars implements Loadable{
     public static UI ui;
     public static NetServer netServer;
     public static NetClient netClient;
+    public static CoreProtect coreProtect;
+    public static SpiderChat spiderChat;
+    public static SpiderWeb spiderweb;
+    public static SpiderSilk spiderSilk;
 
     public static Entities entities;
     public static EntityGroup<Player> playerGroup;
@@ -190,6 +200,7 @@ public class Vars implements Loadable{
     public static EntityGroup<BaseUnit> unitGroup;
 
     public static Player player;
+    public static Player scripter;
 
     @Override
     public void loadAsync(){
@@ -233,6 +244,9 @@ public class Vars implements Loadable{
         spawner = new WaveSpawner();
         indexer = new BlockIndexer();
         pathfinder = new Pathfinder();
+
+        spiderChat = new SpiderChat();
+        spiderweb = new SpiderWeb();
 
         entities = new Entities();
         playerGroup = entities.add(Player.class).enableMapping();

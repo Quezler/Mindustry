@@ -2,6 +2,7 @@ package mindustry.world.blocks;
 
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.ArcAnnotate.*;
 import mindustry.entities.traits.BuilderTrait.*;
@@ -10,6 +11,9 @@ import mindustry.world.*;
 import java.util.*;
 
 public interface Autotiler{
+
+    Array<BuildRequest> requests = new Array<>();
+
     class AutotilerHolder{
         static final int[] blendresult = new int[3];
         static final BuildRequest[] directionals = new BuildRequest[4];

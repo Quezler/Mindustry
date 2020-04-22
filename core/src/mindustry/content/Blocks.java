@@ -1,6 +1,7 @@
 package mindustry.content;
 
 import arc.*;
+import arc.func.*;
 import arc.struct.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -10,9 +11,11 @@ import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
@@ -690,7 +693,7 @@ public class Blocks implements ContentList{
             };
         }};
 
-        pulverizer = new GenericCrafter("pulverizer"){{
+        pulverizer = new Pulverizer("pulverizer"){{
             requirements(Category.crafting, ItemStack.with(Items.copper, 30, Items.lead, 25));
             outputItem = new ItemStack(Items.sand, 1);
             craftEffect = Fx.pulverize;
@@ -739,6 +742,9 @@ public class Blocks implements ContentList{
         copperWall = new Wall("copper-wall"){{
             requirements(Category.defense, ItemStack.with(Items.copper, 6));
             health = 80 * wallHealthMultiplier;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> copperWallLarge;
         }};
 
         copperWallLarge = new Wall("copper-wall-large"){{
@@ -750,18 +756,27 @@ public class Blocks implements ContentList{
         titaniumWall = new Wall("titanium-wall"){{
             requirements(Category.defense, ItemStack.with(Items.titanium, 6));
             health = 110 * wallHealthMultiplier;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> titaniumWallLarge;
+            downgrade = () -> copperWall;
         }};
 
         titaniumWallLarge = new Wall("titanium-wall-large"){{
             requirements(Category.defense, ItemStack.mult(titaniumWall.requirements, 4));
             health = 110 * wallHealthMultiplier * 4;
             size = 2;
+
+            downgrade = () -> copperWallLarge;
         }};
 
         plastaniumWall = new Wall("plastanium-wall"){{
             requirements(Category.defense, ItemStack.with(Items.plastanium, 5, Items.metaglass, 2));
             health = 190 * wallHealthMultiplier;
             insulated = true;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> plastaniumWallLarge;
         }};
 
         plastaniumWallLarge = new Wall("plastanium-wall-large"){{
@@ -774,17 +789,26 @@ public class Blocks implements ContentList{
         thoriumWall = new Wall("thorium-wall"){{
             requirements(Category.defense, ItemStack.with(Items.thorium, 6));
             health = 200 * wallHealthMultiplier;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> thoriumWallLarge;
+            downgrade = () -> titaniumWall;
         }};
 
         thoriumWallLarge = new Wall("thorium-wall-large"){{
             requirements(Category.defense, ItemStack.mult(thoriumWall.requirements, 4));
             health = 200 * wallHealthMultiplier * 4;
             size = 2;
+
+            downgrade = () -> titaniumWallLarge;
         }};
 
         phaseWall = new DeflectorWall("phase-wall"){{
             requirements(Category.defense, ItemStack.with(Items.phasefabric, 6));
             health = 150 * wallHealthMultiplier;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> phaseWallLarge;
         }};
 
         phaseWallLarge = new DeflectorWall("phase-wall-large"){{
@@ -796,12 +820,17 @@ public class Blocks implements ContentList{
         surgeWall = new SurgeWall("surge-wall"){{
             requirements(Category.defense, ItemStack.with(Items.surgealloy, 6));
             health = 230 * wallHealthMultiplier;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> surgeWallLarge;
+            downgrade = () -> thoriumWall;
         }};
 
         surgeWallLarge = new SurgeWall("surge-wall-large"){{
             requirements(Category.defense, ItemStack.mult(surgeWall.requirements, 4));
             health = 230 * 4 * wallHealthMultiplier;
             size = 2;
+            downgrade = () -> thoriumWallLarge;
         }};
 
         door = new Door("door"){{
@@ -815,6 +844,9 @@ public class Blocks implements ContentList{
             closefx = Fx.doorcloselarge;
             health = 100 * 4 * wallHealthMultiplier;
             size = 2;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> doorLarge;
         }};
 
         scrapWall = new Wall("scrap-wall"){{
@@ -911,6 +943,8 @@ public class Blocks implements ContentList{
             health = 65;
             speed = 0.08f;
             displayedSpeed = 10f;
+
+            downgrade = () -> conveyor;
         }};
 
         armoredConveyor = new ArmoredConveyor("armored-conveyor"){{
@@ -918,6 +952,8 @@ public class Blocks implements ContentList{
             health = 180;
             speed = 0.08f;
             displayedSpeed = 10f;
+
+            downgrade = () -> titaniumConveyor;
         }};
 
         junction = new Junction("junction"){{
@@ -957,6 +993,9 @@ public class Blocks implements ContentList{
         router = new Router("router"){{
             requirements(Category.distribution, ItemStack.with(Items.copper, 3));
             buildCostMultiplier = 2f;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> distributor;
         }};
 
         distributor = new Router("distributor"){{
@@ -1020,6 +1059,8 @@ public class Blocks implements ContentList{
             liquidCapacity = 16f;
             liquidPressure = 1.025f;
             health = 90;
+
+            downgrade = () -> conduit;
         }};
 
         platedConduit = new ArmoredConduit("plated-conduit"){{
@@ -1032,6 +1073,9 @@ public class Blocks implements ContentList{
         liquidRouter = new LiquidRouter("liquid-router"){{
             requirements(Category.liquid, ItemStack.with(Items.graphite, 4, Items.metaglass, 2));
             liquidCapacity = 20f;
+
+            flags = EnumSet.of(BlockFlag.scalable);
+            upscale = () -> liquidTank;
         }};
 
         liquidTank = new LiquidTank("liquid-tank"){{
@@ -1101,7 +1145,15 @@ public class Blocks implements ContentList{
             requirements(Category.power, ItemStack.with(Items.copper, 25, Items.lead, 15));
             powerProduction = 1f;
             itemDuration = 120f;
-        }};
+        }
+            @Override
+            public void silk(Tile tile, Cons<Silk> cons){
+                cons.get(new Silk(tile){{
+                    requirements = air.requirements;
+                    trigger = () -> tile.deconstructNet();
+                }});
+            }
+        };
 
         thermalGenerator = new ThermalGenerator("thermal-generator"){{
             requirements(Category.power, ItemStack.with(Items.copper, 40, Items.graphite, 35, Items.lead, 50, Items.silicon, 35, Items.metaglass, 40));
@@ -1664,6 +1716,8 @@ public class Blocks implements ContentList{
             maxSpawn = 1;
             consumes.power(1.2f);
             consumes.items();
+
+            rebuildable = false;
         }};
 
         spiritFactory = new UnitFactory("spirit-factory"){{

@@ -26,6 +26,8 @@ import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
+import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.*;
@@ -43,6 +45,7 @@ public class Block extends BlockStorage{
 
     /** whether this block has a tile entity that updates */
     public boolean update;
+    public boolean share;
     /** whether this block has health and can be destroyed */
     public boolean destructible;
     /** whether unloaders work on this block*/
@@ -142,6 +145,9 @@ public class Block extends BlockStorage{
     /** Whether this block has instant transfer.*/
     public boolean instantTransfer = false;
     public boolean alwaysUnlocked = false;
+    /** What this block can merge into */
+    public Prov<Block> upscale;
+    public Prov<Block> downgrade;
 
     protected TextureRegion[] cacheRegions = {};
     protected Array<String> cacheRegionStrings = new Array<>();
@@ -156,6 +162,7 @@ public class Block extends BlockStorage{
 
     /** Dump timer ID.*/
     protected final int timerDump = timers++;
+    protected final int timerShare = timers++;
     /** How often to try dumping items in ticks, e.g. 5 = 12 times/sec*/
     protected final int dumpTime = 5;
 
@@ -334,7 +341,7 @@ public class Block extends BlockStorage{
     public void placed(Tile tile){
         if(net.client()) return;
 
-        if((consumesPower && !outputsPower) || (!consumesPower && outputsPower)){
+        if((consumesPower && !outputsPower) || (!consumesPower && outputsPower) || forcePower){
             int range = 10;
             tempTiles.clear();
             Geometry.circle(tile.x, tile.y, range, (x, y) -> {
@@ -918,4 +925,35 @@ public class Block extends BlockStorage{
         Arrays.sort(requirements, Structs.comparingInt(i -> i.item.id));
     }
 
+    public void share(Tile tile){
+        if(!Nydus.rtg_generator_sharing.active()) return;
+        if(!tile.entity.timer.get(timerShare, 60)) return;
+
+        tile.entity.items.forEach((item, amount) -> tile.entity.proximity().each(other -> {
+            if(other.block != tile.block) return;
+
+            int sharable = Mathf.floor((tile.entity.items.get(item) - other.entity.items.get(item)) / 2);
+            sharable = other.block.acceptStack(item, sharable, other, null);
+            if(sharable > 0){
+                tile.entity.items.remove(item, sharable);
+                other.entity.items.add(item, sharable);
+                netServer.titanic.add(tile, other);
+                Call.transferItemTo(item, 0, tile.drawx(), tile.drawy(), other);
+            }
+        }));
+    }
+
+    public int getAroundCount(Tile tile, Boolf<Tile> pred){
+        final int[] size = {0};
+        tile.getAroundTiles(tempTiles).select(pred).each(t -> size[0] += (t.block.size * t.block.size));
+        return size[0];
+    }
+
+    public void unloaded(Tile tile, Item item, Tile other){
+        //
+    }
+
+    public void silk(Tile tile, Cons<Silk> cons){
+        //
+    }
 }

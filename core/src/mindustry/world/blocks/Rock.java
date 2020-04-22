@@ -4,16 +4,35 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.type.*;
+import mindustry.game.*;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 
+import static mindustry.Vars.*;
+
 public class Rock extends Block{
     protected int variants;
+
+    public static Array<Block> boulders = new Array<>();
 
     public Rock(String name){
         super(name);
         breakable = true;
         alwaysReplace = true;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+
+        boulders.add(Blocks.rock, Blocks.sandBoulder, Blocks.shaleBoulder, Blocks.snowrock);
     }
 
     @Override

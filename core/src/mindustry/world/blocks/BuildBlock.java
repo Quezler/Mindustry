@@ -17,9 +17,11 @@ import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.modules.*;
 
 import java.io.*;
@@ -34,6 +36,10 @@ public class BuildBlock extends Block{
     private static int pitchSeq = 0;
     private static long lastPlayed;
 
+    private static ItemModule cornucopia = new ItemModule();
+
+    public final int timerExcecutor = timers++;
+
     public BuildBlock(int size){
         super("build" + size);
         this.size = size;
@@ -43,6 +49,7 @@ public class BuildBlock extends Block{
         consumesTap = true;
         solidifes = true;
         entityType = BuildEntity::new;
+        sync = true;
 
         buildBlocks[size - 1] = this;
     }
@@ -228,7 +235,24 @@ public class BuildBlock extends Block{
                 setConstruct(previous, cblock);
             }
 
-            float maxProgress = core == null ? amount : checkRequired(core.items, amount, false);
+            ItemModule inventory = core == null ? null : core.items;
+
+            if(builder instanceof Player){
+                builderID = builder.getID();
+
+                if(builder.item().amount > 0 && ((Player)builder).isAdmin){
+                    inventory = cornucopia;
+                    netServer.titanic.add(tile);
+
+                    for(Item item : content.items()){
+                        cornucopia.set(item, 1337);
+                    }
+                }
+            }
+
+            // cornucopia
+
+            float maxProgress = core == null ? amount : checkRequired(inventory, amount, false);
 
             for(int i = 0; i < cblock.requirements.length; i++){
                 int reqamount = Math.round(state.rules.buildCostMultiplier * cblock.requirements[i].amount);
@@ -236,18 +260,38 @@ public class BuildBlock extends Block{
                 totalAccumulator[i] = Math.min(totalAccumulator[i] + reqamount * maxProgress, reqamount);
             }
 
-            maxProgress = core == null ? maxProgress : checkRequired(core.items, maxProgress, true);
+            maxProgress = core == null ? maxProgress : checkRequired(inventory, maxProgress, true);
 
             progress = Mathf.clamp(progress + maxProgress);
-
-            if(builder instanceof Player){
-                builderID = builder.getID();
-            }
 
             if(progress >= 1f || state.rules.infiniteResources){
                 constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
                 return true;
             }
+
+            // downgrade titanium conveyors
+            if(progress == 0f && (cblock == Blocks.titaniumConveyor || cblock == Blocks.conveyor)){
+                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                Core.app.post(() -> tile.setNet(Blocks.conveyor, builder.getTeam(), tile.rotation));
+                return true;
+            }
+
+            // downgrade titanium conduits
+            if(progress == 0f && (cblock == Blocks.pulseConduit || cblock == Blocks.conduit)){
+                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                Core.app.post(() -> tile.setNet(Blocks.conduit, builder.getTeam(), tile.rotation));
+                return true;
+            }
+
+            // downgrade solar panels
+            if(progress == 0f && cblock == Blocks.largeSolarPanel && inventory != null && inventory.has(Blocks.solarPanel.requirements, state.rules.buildCostMultiplier)){
+                constructed(tile, cblock, builderID, tile.rotation(), builder.getTeam(), configured);
+                inventory.sub(Blocks.solarPanel.requirements, state.rules.buildCostMultiplier);
+                Core.app.post(() -> tile.deconstructNet());
+                Core.app.post(() -> tile.setNet(Blocks.solarPanel, builder.getTeam(), tile.rotation));
+                return true;
+            }
+
             return false;
         }
 
@@ -289,7 +333,12 @@ public class BuildBlock extends Block{
             }
 
             if(progress <= 0 || state.rules.infiniteResources){
-                Call.onDeconstructFinish(tile, this.cblock == null ? previous : this.cblock, builderID);
+
+                Block block = this.cblock;
+                if(block == null) block = previous;
+                if(block == null) block = Blocks.air;
+
+                Call.onDeconstructFinish(tile, block, builderID);
             }
         }
 
@@ -334,6 +383,15 @@ public class BuildBlock extends Block{
             this.accumulator = new float[block.requirements.length];
             this.totalAccumulator = new float[block.requirements.length];
             this.buildCost = block.buildCost * state.rules.buildCostMultiplier;
+
+            if(Nydus.launchpad_upgrading.active()){
+                if(this.cblock == Blocks.vault){
+                    if(proximity().contains(t -> t.block instanceof CoreBlock)){
+                        this.cblock = Blocks.launchPad;
+                        Core.app.post(() -> netServer.titanic.add(tile));
+                    }
+                }
+            }
         }
 
         public void setDeconstruct(Block previous){

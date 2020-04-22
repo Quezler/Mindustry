@@ -1,5 +1,7 @@
 package mindustry.entities.type;
 
+import arc.*;
+import arc.func.*;
 import mindustry.annotations.Annotations.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -14,6 +16,8 @@ import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 
+import java.util.concurrent.*;
+
 import static mindustry.Vars.*;
 
 public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable, DrawTrait, VelocityTrait, TimeTrait, TeamTrait, AbsorbTrait{
@@ -27,6 +31,8 @@ public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable
     protected BulletType type;
     protected Entity owner;
     protected float time;
+
+    public Cons<Bullet> deathrattle = bullet -> {};
 
     /** Internal use only! */
     public Bullet(){
@@ -77,7 +83,7 @@ public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable
         return create(type, parent.owner, parent.team, x, y, angle, velocityScl);
     }
 
-    @Remote(called = Loc.server, unreliable = true)
+    @Remote(called = Loc.server, variants = Variant.out, unreliable = true)
     public static void createBullet(BulletType type, Team team, float x, float y, float angle, float velocityScl, float lifetimeScl){
         create(type, null, team, x, y, angle, velocityScl, lifetimeScl, null);
     }
@@ -272,6 +278,8 @@ public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable
 
     @Override
     public void removed(){
+        deathrattle.get(this);
+        deathrattle = b -> {};
         Pools.free(this);
     }
 
@@ -319,5 +327,10 @@ public class Bullet extends SolidEntity implements DamageTrait, Scaled, Poolable
         float angle = Mathf.atan2(velocity.x, velocity.y) * Mathf.radiansToDegrees;
         if(angle < 0) angle += 360;
         return angle;
+    }
+
+    public static Bullet capture(Runnable runnable){
+        runnable.run();
+        return bulletGroup.entitiesToAdd.get(bulletGroup.entitiesToAdd.size -1);
     }
 }

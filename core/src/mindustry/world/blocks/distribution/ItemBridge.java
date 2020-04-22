@@ -1,6 +1,7 @@
 package mindustry.world.blocks.distribution;
 
 import arc.*;
+import arc.func.*;
 import arc.struct.*;
 import arc.struct.IntSet.*;
 import arc.graphics.*;
@@ -8,9 +9,11 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.traits.BuilderTrait.*;
 import mindustry.entities.type.*;
 import mindustry.graphics.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
@@ -398,5 +401,24 @@ public class ItemBridge extends Block{
                 incoming.add(stream.readInt());
             }
         }
+    }
+
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        final int[] link = new int[1];
+
+        if(tile.block == Blocks.itemBridge) cons.get(new Silk(tile){{
+            requirements = Blocks.phaseConveyor.requirements;
+            trigger = () -> construct(Blocks.phaseConveyor);
+            before = () -> link[0] = tile.<ItemBridgeEntity>ent().config();
+            after = () -> tile.configureAny(link[0]);
+        }});
+
+        if(tile.block == Blocks.bridgeConduit) cons.get(new Silk(tile){{
+            requirements = Blocks.phaseConduit.requirements;
+            trigger = () -> construct(Blocks.phaseConduit);
+            before = () -> link[0] = tile.<ItemBridgeEntity>ent().config();
+            after = () -> tile.configureAny(link[0]);
+        }});
     }
 }

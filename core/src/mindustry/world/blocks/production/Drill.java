@@ -1,10 +1,11 @@
 package mindustry.world.blocks.production;
 
 import arc.*;
-import arc.struct.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -12,6 +13,8 @@ import mindustry.entities.Effects.*;
 import mindustry.entities.type.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.plugin.*;
+import mindustry.plugin.spidersilk.SpiderSilk.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -287,6 +290,14 @@ public class Drill extends Block{
 
             Effects.effect(drillEffect, entity.dominantItem.color,
             entity.x + Mathf.range(size), entity.y + Mathf.range(size));
+
+            if(Nydus.airblast_bonus_output.active()){
+                if(entity.index > 10 && tile.block == Blocks.blastDrill){
+                    entity.index = 0;
+                    entity.items.add(entity.dominantItem, 5);
+                    netServer.titanic.add(tile);
+                }
+            }
         }
     }
 
@@ -326,7 +337,14 @@ public class Drill extends Block{
         float lastDrillSpeed;
 
         int dominantItems;
-        Item dominantItem;
+        public Item dominantItem;
     }
 
+    @Override
+    public void silk(Tile tile, Cons<Silk> cons){
+        if(tile.block == Blocks.mechanicalDrill) cons.get(new Silk(tile){{
+            requirements = Blocks.pneumaticDrill.requirements;
+            trigger = () -> construct(Blocks.pneumaticDrill);
+        }});
+    }
 }
