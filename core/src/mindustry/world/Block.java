@@ -197,6 +197,7 @@ public class Block extends BlockStorage{
         TileEntity entity = tile.ent();
 
         for(Tile other : getPowerConnections(tile, tempTiles)){
+            if (other.entity == null) continue;
             if(other.entity.power != null){
                 other.entity.power.graph.add(entity.power.graph);
             }
