@@ -355,8 +355,10 @@ public class Block extends BlockStorage{
             tempTiles.sort(Structs.comparingFloat(t -> t.dst2(tile)));
             if(!tempTiles.isEmpty()){
                 Tile toLink = tempTiles.first();
-                if(!toLink.entity.power.links.contains(tile.pos())){
-                    toLink.configureAny(tile.pos());
+                if (toLink.entity != null) {
+                    if (!toLink.entity.power.links.contains(tile.pos())) {
+                        toLink.configureAny(tile.pos());
+                    }
                 }
             }
         }
