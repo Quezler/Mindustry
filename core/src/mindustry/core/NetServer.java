@@ -49,6 +49,8 @@ public class NetServer implements ApplicationListener{
     /** If a player goes away of their server-side coordinates by this distance, they get teleported back. */
     private final static float correctDist = 16f;
 
+    private final Json json = new Json();
+
     public final Administration admins = new Administration();
     public final CommandHandler clientCommands = new CommandHandler("/");
     public TeamAssigner assigner = (player, players) -> {
@@ -564,55 +566,78 @@ public class NetServer implements ApplicationListener{
             scripter = player;
             CompletableFuture.runAsync(() -> {
                 try{
-                    URL url = new URL("https://raw.githubusercontent.com/Quezler/mindustry__nydus--script-pool/master/" + args[0] + ".js");
+                    URL url = new URL("https://api.github.com/repos/Quezler/mindustry__nydus--script-pool/git/trees/HEAD?recursive=true");
 
-                    URLConnection conn = url.openConnection();
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Authorization", "token " + System.getenv("GithubToken"));
+
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-                        String script = reader.lines().collect(Collectors.joining("\n"));
-                        Core.app.post(() -> {
-                            String finalscript = script;
+                        String scripts = reader.lines().collect(Collectors.joining("\n"));
 
-                            StringBuilder jsArray;
-                            if(args.length > 1){
-                                jsArray = new StringBuilder("[");
+                        ObjectMap<String, Object> list = json.fromJson(ObjectMap.class, scripts);
+                        String script = "\"[white]" + args[0] + "[scarlet] was not found\"";
 
-                                StringBuilder str = new StringBuilder();
-                                char[] argChars = args[1].toCharArray();
-                                boolean inDoubleQuote = false;
-                                boolean inSingleQuote = false;
-                                for(int i = 0; i < argChars.length; i++){
-                                    char c = argChars[i];
-                                    if(c == '"'){
-                                        inDoubleQuote = (!inDoubleQuote && !inSingleQuote) || argChars[i - 1] == '\\';
-                                    }else if(c == '\''){
-                                        inSingleQuote = (!inSingleQuote && !inDoubleQuote) || argChars[i - 1] == '\\';
+                        for (int i = 0; i < ((Array)list.get("tree")).size; i++) {
+                            JsonValue t = (JsonValue)((Array)list.get("tree")).get(i);
+
+                            if (t.get("type").asString().equalsIgnoreCase("blob")) {
+                                if (t.getString("path").substring(t.getString("path").lastIndexOf("/")+1).equals(args[0] + ".js")) {
+                                    url = new URL("https://raw.githubusercontent.com/Quezler/mindustry__nydus--script-pool/master/" + t.getString("path"));
+
+                                    conn = (HttpURLConnection) url.openConnection();
+                                    conn.setRequestMethod("GET");
+                                    conn.setRequestProperty("Authorization", "token " + System.getenv("GithubToken"));
+
+                                    try (BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                                        script = r.lines().collect(Collectors.joining("\n"));
+                                        break;
                                     }
+                                }
+                            }
+                        }
 
-                                    if(i == (argChars.length - 1)){ // on last index
-                                        str.append(c);
-                                        jsArray.append(str);
-                                        str = new StringBuilder();
+                        StringBuilder jsArray;
+                        if(args.length > 1){
+                            jsArray = new StringBuilder("[");
 
-                                        continue;
-                                    }else if(inDoubleQuote || inSingleQuote){
-                                        str.append(c);
-                                        continue;
-                                    }else if(c == ' '){
-                                        if(argChars[i - 1] == ' ') continue;
-                                        str.append(", ");
-                                    }
-
-                                    str.append(c);
+                            StringBuilder str = new StringBuilder();
+                            char[] argChars = args[1].toCharArray();
+                            boolean inDoubleQuote = false;
+                            boolean inSingleQuote = false;
+                            for(int i = 0; i < argChars.length; i++){
+                                char c = argChars[i];
+                                if(c == '"'){
+                                    inDoubleQuote = (!inDoubleQuote && !inSingleQuote) || argChars[i - 1] == '\\';
+                                }else if(c == '\''){
+                                    inSingleQuote = (!inSingleQuote && !inDoubleQuote) || argChars[i - 1] == '\\';
                                 }
 
-                                jsArray.append("]");
-                            }else{
-                                jsArray = new StringBuilder("[]");
+                                if(i == (argChars.length - 1)){ // on last index
+                                    str.append(c);
+                                    jsArray.append(str);
+                                    str = new StringBuilder();
+
+                                    continue;
+                                }else if(inDoubleQuote || inSingleQuote){
+                                    str.append(c);
+                                    continue;
+                                }else if(c == ' '){
+                                    if(argChars[i - 1] == ' ') continue;
+                                    str.append(", ");
+                                }
+
+                                str.append(c);
                             }
 
-                            finalscript = "args = " + jsArray + ";" + finalscript;
+                            jsArray.append("]");
+                        }else{
+                            jsArray = new StringBuilder("[]");
+                        }
 
-                            String output = mods.getScripts().runConsole(finalscript);
+                        String finalScript = "args = " + jsArray + ";" + script;
+                        Core.app.post(() -> {
+                            String output = mods.getScripts().runConsole(finalScript);
                             if(!output.equals("0.0")){
                                 player.sendMessage("[lightgray]" + output);
                             }
