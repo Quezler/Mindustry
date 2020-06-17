@@ -872,6 +872,14 @@ public class NetServer implements ApplicationListener{
     public static void connectConfirm(Player player){
         if(player.con == null || player.con.hasConnected) return;
 
+        if(!state.rules.tags.containsKey("silicon")){
+            if(!player.spiderling.unlockedBlocks.contains(Blocks.siliconSmelter)){
+                Call.onConnect(player.con, "mindustry.nydus.app", 6569);
+                Log.info("&lm[{1}] &y{0} got sent to the silicon valley. ", player.name, player.uuid);
+                return;
+            }
+        }
+
         player.add();
         player.con.hasConnected = true;
         if(Config.showConnectMessages.bool()){
@@ -885,13 +893,6 @@ public class NetServer implements ApplicationListener{
         }
 
         Events.fire(new PlayerJoin(player));
-
-        if(!state.rules.tags.containsKey("silicon")){
-            if(!player.spiderling.unlockedBlocks.contains(Blocks.siliconSmelter)){
-                Call.onConnect(player.con, "mindustry.nydus.app", 6569);
-            }
-        }
-
         Call.onInfoToast(player.con,"/readme", 2.5f);
     }
 
