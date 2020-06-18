@@ -55,14 +55,18 @@ public class EmojiFilter implements ApplicationListener{
             }
 
             for(String word : text.split("\\s+")){
-                if (word.startsWith("#")) {
-                    text = text.replaceAll("(?i)" + word, word.replaceAll("#", ""));
-                    continue;
-                }
-
+                if (word.startsWith("#")) continue;
                 word = word.replaceAll("[\\p{Punct}&&[^-]]+", "");
                 if(Fonts.getUnicode(word.toLowerCase()) != 0 && !blacklist.contains(word)){
-                    text = text.replaceAll("(?i)" + word, (char) Fonts.getUnicode(word.toLowerCase()) + "");
+                    text = text.replaceAll("(?i)(?<=^|[^#])" + word, (char) Fonts.getUnicode(word.toLowerCase()) + "");
+                }
+            }
+
+            for(String word : text.split("\\s+")){
+                if (!word.startsWith("#")) continue;
+                word = word.replaceAll("[\\p{Punct}&&[^-]]+", "");
+                if(Fonts.getUnicode(word.toLowerCase()) != 0 && !blacklist.contains(word)){
+                    text = text.substring(0, text.indexOf(word)-1) + text.substring(text.indexOf(word)-1).replace("#" + word, word);
                 }
             }
 
