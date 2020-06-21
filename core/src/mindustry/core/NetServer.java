@@ -356,7 +356,6 @@ public class NetServer implements ApplicationListener{
         });
 
         clientCommands.<Player>register("t", "<message...>", "Send a message only to your teammates.", (args, player) -> {
-            player.applyEffect(StatusEffects.boss, 999999f);
             playerGroup.all().each(p -> p.getTeam() == player.getTeam(), o -> o.sendMessage(args[0], player, "[#" + player.getTeam().color.toString() + "]<T>" + NetClient.colorizeName(player.id, player.name)));
         });
 
