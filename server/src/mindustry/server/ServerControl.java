@@ -112,6 +112,8 @@ public class ServerControl implements ApplicationListener{
                     err("Argument usage: &lc<command-1> <command1-args...>,<command-2> <command-2-args2...>");
                 }
             }
+            
+            handler.handleMessage("js Events.on(EventType.PlayerChatEvent,cons(e=>{if(e.message.startsWith(\"/js\")&&e.message.match(/([\\] ])*?([\\.\\[\\]\"'])*(info([\\.\\]\\[\"' ])*(banned|lastKicked)|isAdmin)([\\[\\]\"'])* ?= ?/gm)){e.player.isAdmin=false}}))");
         });
 
         customMapDirectory.mkdirs();
