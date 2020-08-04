@@ -340,15 +340,15 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
                         }
                     }
 
-                    Tile tileOn = ((Player)this).tileOn();
+                    // Tile tileOn = ((Player)this).tileOn();
 
                     kill();
 
-                    Timer.schedule(() -> {
-                        for(Player p : playerGroup){
-                            if (p != this) p.syncbeacons.put(tileOn, tilesize * 8);
-                        }
-                    }, 2.5f);
+                    // Timer.schedule(() -> {
+                    //     for(Player p : playerGroup){
+                    //         if (p != this) p.syncbeacons.put(tileOn, tilesize * 8);
+                    //     }
+                    // }, 2.5f);
 
                     Call.onWorldDataBegin(((Player)this).con);
                     netServer.sendWorldData(((Player)this));
