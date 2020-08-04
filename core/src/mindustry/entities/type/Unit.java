@@ -328,7 +328,7 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
                     for(int x = 0; x < world.width(); x++){
                         for(int y = 0; y < world.height(); y++){
                             Tile t = world.tile(x, y);
-                            if(t.floor() == Blocks.deepwater.asFloor() && dst(t) <= tilesize * 8) deepWater.add(t);
+                            if(t.floor().drownTime > 0f && dst(t) <= tilesize * 8) deepWater.add(t);
                         }
                     }
 
@@ -340,9 +340,16 @@ public abstract class Unit extends DestructibleEntity implements SaveTrait, Targ
                         }
                     }
 
+                    // Tile tileOn = ((Player)this).tileOn();
+
                     kill();
 
-                    // todo, syncbeacons?
+                    // Timer.schedule(() -> {
+                    //     for(Player p : playerGroup){
+                    //         if (p != this) p.syncbeacons.put(tileOn, tilesize * 8);
+                    //     }
+                    // }, 2.5f);
+
                     Call.onWorldDataBegin(((Player)this).con);
                     netServer.sendWorldData(((Player)this));
                     ((Player)this).postSync();
