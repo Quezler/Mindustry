@@ -44,8 +44,6 @@ public class NuclearReactor extends PowerGenerator{
     public TextureRegion topRegion, lightsRegion;
 
     protected final int timerMeltdown = timers++;
-    
-    private Interval interval = new Interval();
 
     public NuclearReactor(String name){
         super(name);
@@ -125,17 +123,17 @@ public class NuclearReactor extends PowerGenerator{
         if(Nydus.nuclear_demon_core.active() && entity.timer.get(timerMeltdown, 60 / fullness)){
             Array<Tile> walls = tile.getAroundTiles(tempTiles).select(t -> t.block == Blocks.thoriumWall || t.block == Blocks.thoriumWallLarge);
             if(walls.isEmpty()) return;
-            
-            if (interval.get(1000)) {
+
+            if (entity.timer.get(entity.items.get(Items.thorium) > 3000 ? 3000 : entity.items.get(Items.thorium))) {
                 Tile wall = walls.random();
-            
+
                 if (wall.block() == Blocks.thoriumWall) {
-                    wall.setNet(Blocks.titaniumWall, wall.getTeam(), 0);
-                    Call.transferItemTo(Items.thorium, 5, wall.drawx(), wall.drawy(), tile);
+                    wall.constructNet(Blocks.titaniumWall, wall.getTeam(), (byte)0);
+                    Call.transferItemTo(Items.thorium, 6, wall.drawx(), wall.drawy(), tile);
 
                 } else if (wall.block() == Blocks.thoriumWallLarge) {
-                    wall.setNet(Blocks.titaniumWallLarge, wall.getTeam(), 0);
-                    Call.transferItemTo(Items.thorium, 20, wall.drawx(), wall.drawy(), tile);
+                    wall.constructNet(Blocks.titaniumWallLarge, wall.getTeam(), (byte)0);
+                    Call.transferItemTo(Items.thorium, 24, wall.drawx(), wall.drawy(), tile);
 
                 }
             }
