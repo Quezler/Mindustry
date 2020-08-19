@@ -49,14 +49,14 @@ public class SpiderChat extends Plugin implements ApplicationListener{
         Call.sendMessage(Strings.format("[#{0}]{1} [#{2}]{3}", player.color, player.name, server.color, action));
     }
 
-    public String colorcase(String string, Color color){
-        Pattern p = Pattern.compile("[A-Z]+");
-        Matcher m = p.matcher(string);
-        StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            m.appendReplacement(sb, "[#" + color + "]" + m.group() + "[]");
-        }
-        m.appendTail(sb);
-        return sb.toString();
-    }
+    // public String colorcase(String string, Color color){
+    //     Pattern p = Pattern.compile("[A-Z]+");
+    //     Matcher m = p.matcher(string);
+    //     StringBuffer sb = new StringBuffer();
+    //     while (m.find()) {
+    //         m.appendReplacement(sb, "[#" + color + "]" + m.group() + "[]");
+    //     }
+    //     m.appendTail(sb);
+    //     return sb.toString();
+    // }
 }
