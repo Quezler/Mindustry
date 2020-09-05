@@ -123,10 +123,20 @@ public class NuclearReactor extends PowerGenerator{
         if(Nydus.nuclear_demon_core.active() && entity.timer.get(timerMeltdown, 60 / fullness)){
             Array<Tile> walls = tile.getAroundTiles(tempTiles).select(t -> t.block == Blocks.thoriumWall || t.block == Blocks.thoriumWallLarge);
             if(walls.isEmpty()) return;
-            Tile wall = walls.random();
-            wall.entity.damage(200);
 
-            Call.transferItemTo(Items.thorium, 1, wall.drawx(), wall.drawy(), tile);
+            if (entity.timer.get(entity.items.get(Items.thorium) > 3000 ? 3000 : entity.items.get(Items.thorium))) {
+                Tile wall = walls.random();
+
+                if (wall.block() == Blocks.thoriumWall) {
+                    wall.constructNet(Blocks.titaniumWall, wall.getTeam(), (byte)0);
+                    Call.transferItemTo(Items.thorium, 6, wall.drawx(), wall.drawy(), tile);
+
+                } else if (wall.block() == Blocks.thoriumWallLarge) {
+                    wall.constructNet(Blocks.titaniumWallLarge, wall.getTeam(), (byte)0);
+                    Call.transferItemTo(Items.thorium, 24, wall.drawx(), wall.drawy(), tile);
+
+                }
+            }
         }
     }
 
