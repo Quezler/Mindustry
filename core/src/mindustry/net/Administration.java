@@ -397,8 +397,6 @@ public class Administration{
 
     public void addKey(String key, float timeout) {
         adminKeys.add(key);
-        adminPlayer(player.uuid, player.usid);
-        player.isAdmin = true;
         Timer.schedule(() -> {
             if (existsKey(key)) {
                 removeKey(key);
