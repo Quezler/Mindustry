@@ -738,15 +738,9 @@ public class ServerControl implements ApplicationListener{
             }
         });
 
-        handler.register("overthrow", "[discordId]", "Overthrows all admins.", arg -> {
+        handler.register("overthrow", "Overthrows all admins.", arg -> {
             for(PlayerInfo info : netServer.admins.getAdmins()){
-                if (arg.length == 1) {
-                    if (info.discordId != null && info.discordId.equals(arg[0])) {
-                        netServer.admins.unAdminPlayer(info.id);
-                    }
-                } else {
-                    netServer.admins.unAdminPlayer(info.id);
-                }
+                netServer.admins.unAdminPlayer(info.id);
             }
         });
 
@@ -887,13 +881,13 @@ public class ServerControl implements ApplicationListener{
             world.reload();
         });
 
-        handler.register("admin-key", "<key> <discordId> <timeout>", "Adds a one time key that will grant a player admin", arg -> {
+        handler.register("admin-key", "<key> <timeout>", "Adds a one time key that will grant a player admin", arg -> {
             if (netServer.admins.existsKey(arg[0])) {
                 err("Key already exists");
                 return;
             }
 
-            netServer.admins.addKey(arg[0], arg[1], Float.parseFloat(arg[2]));
+            netServer.admins.addKey(arg[0], Float.parseFloat(arg[2]));
             info("Added a new key");
         });
 

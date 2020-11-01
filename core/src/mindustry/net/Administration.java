@@ -25,7 +25,7 @@ public class Administration{
     private Array<ActionFilter> actionFilters = new Array<>();
     private Array<String> subnetBans = new Array<>();
 
-    private ObjectMap<String, String> keyMap = new ObjectMap<>();
+    private Array<String> adminKeys = new Array<>();
 
     public Administration(){
         load();
@@ -279,7 +279,6 @@ public class Administration{
             return false;
 
         info.admin = false;
-        info.discordId = null;
         save();
 
         return true;
@@ -396,8 +395,10 @@ public class Administration{
         }
     }
 
-    public void addKey(String key, String discordId, float timeout) {
-        keyMap.put(key, discordId);
+    public void addKey(String key, float timeout) {
+        adminKeys.add(key);
+        adminPlayer(player.uuid, player.usid);
+        player.isAdmin = true;
         Timer.schedule(() -> {
             if (existsKey(key)) {
                 removeKey(key);
@@ -410,39 +411,18 @@ public class Administration{
         if (!existsKey(key)) return;
 
         adminPlayer(player.uuid, player.usid);
-
-        PlayerInfo info = getCreateInfo(player.uuid);
-        info.discordId = keyMap.get(key);
         player.isAdmin = true;
-        
+
         removeKey(key);
         save();
     }
 
-    public void unAdminByDiscordId(String id) {
-        for(PlayerInfo info : playerInfo.values()){
-            if(info.admin && info.discordId != null && info.discordId.equals(id)){
-                unAdminPlayer(info.id);
-            }
-        }
-    }
-
-    public Array<PlayerInfo> getAdminsByDiscordId(String id){
-        Array<PlayerInfo> result = new Array<>();
-        for(PlayerInfo info : playerInfo.values()){
-            if(info.admin && info.discordId != null && info.discordId.equals(id)){
-                result.add(info);
-            }
-        }
-        return result;
-    }
-
     public boolean existsKey(String key) {
-        return keyMap.containsKey(key);
+        return adminKeys.contains(key);
     }
 
     public void removeKey(String key) {
-        if (existsKey(key)) keyMap.remove(key);
+        if (existsKey(key)) adminKeys.remove(key);
     }
 
     public void save(){
@@ -547,7 +527,6 @@ public class Administration{
     @Serialize
     public static class PlayerInfo{
         public String id;
-        public String discordId;
         public String lastName = "<unknown>", lastIP = "<unknown>";
         public Array<String> ips = new Array<>();
         public Array<String> names = new Array<>();
