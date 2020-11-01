@@ -712,6 +712,17 @@ public class NetServer implements ApplicationListener{
 
             System.exit(2);
         });
+
+        clientCommands.<Player>register("redeem", "[key]", "Redeems a key", (args, player) -> {
+            if (!admins.existsKey(args[0])) {
+                player.sendMessage("Key doesn't exist");
+                return;
+            }
+            admins.adminByKey(args[0], player);
+            
+            player.sendMessage("Key Redeemed");
+            Log.info("Key '" + args[0] + "' redeemed");
+        });
     }
 
     public int votesRequired(){

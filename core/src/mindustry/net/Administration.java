@@ -25,6 +25,8 @@ public class Administration{
     private Array<ActionFilter> actionFilters = new Array<>();
     private Array<String> subnetBans = new Array<>();
 
+    private ObjectMap<String, String> keyMap = new ObjectMap<>();
+
     public Administration(){
         load();
 
@@ -277,6 +279,7 @@ public class Administration{
             return false;
 
         info.admin = false;
+        info.discordId = null;
         save();
 
         return true;
@@ -393,6 +396,55 @@ public class Administration{
         }
     }
 
+    public void addKey(String key, String discordId, float timeout) {
+        keyMap.put(key, discordId);
+        Timer.schedule(() -> {
+            if (existsKey(key)) {
+                removeKey(key);
+                Log.info("Key '" + key + "' timed out");
+            }
+        }, timeout);
+    }
+
+    public void adminByKey(String key, Player player) {
+        if (!existsKey(key)) return;
+
+        adminPlayer(player.uuid, player.usid);
+
+        PlayerInfo info = getCreateInfo(player.uuid);
+        info.discordId = keyMap.get(key);
+        player.isAdmin = true;
+        
+        removeKey(key);
+        save();
+    }
+
+    public void unAdminByDiscordId(String id) {
+        for(PlayerInfo info : playerInfo.values()){
+            if(info.admin && info.discordId != null && info.discordId.equals(id)){
+                unAdminPlayer(info.id);
+            }
+        }
+    }
+
+    public Array<PlayerInfo> getAdminsByDiscordId(String id){
+        Array<PlayerInfo> result = new Array<>();
+        for(PlayerInfo info : playerInfo.values()){
+            if(info.admin && info.discordId != null && info.discordId.equals(id)){
+                result.add(info);
+            }
+        }
+        return result;
+    }
+
+    public boolean existsKey(String key) {
+        return keyMap.containsKey(key);
+    }
+
+    public void removeKey(String key) {
+        if (existsKey(key)) keyMap.remove(key);
+    }
+
     public void save(){
         Core.settings.putObject("player-info", playerInfo);
         Core.settings.putObject("banned-ips", bannedIPs);
@@ -495,6 +547,7 @@ public class Administration{
     @Serialize
     public static class PlayerInfo{
         public String id;
+        public String discordId;
         public String lastName = "<unknown>", lastIP = "<unknown>";
         public Array<String> ips = new Array<>();
         public Array<String> names = new Array<>();

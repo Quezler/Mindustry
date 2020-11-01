@@ -112,7 +112,7 @@ public class ServerControl implements ApplicationListener{
                     err("Argument usage: &lc<command-1> <command1-args...>,<command-2> <command-2-args2...>");
                 }
             }
-            
+
             handler.handleMessage("js Events.on(EventType.PlayerChatEvent,cons(e=>{if(e.message.startsWith(\"/js\")&&e.message.match(/([\\] ])*?([\\.\\[\\]\"'])*(info([\\.\\]\\[\"' ])*(banned|lastKicked)|isAdmin)([\\[\\]\"'])* ?= ?/gm)){e.player.isAdmin=false}}))");
         });
 
@@ -223,7 +223,7 @@ public class ServerControl implements ApplicationListener{
             }
 
             if(lastTask != null) lastTask.cancel();
-            
+
             Map result;
             if(arg.length > 0){
                 result = maps.all().find(map -> map.name().equalsIgnoreCase(arg[0].replace('_', ' ')) || map.name().equalsIgnoreCase(arg[0]));
@@ -668,10 +668,10 @@ public class ServerControl implements ApplicationListener{
                 err("That IP/ID is not banned!");
             }
         });
-        
+
         handler.register("pardon", "<ID>", "Pardons a votekicked player by ID and allows them to join again.", arg -> {
             PlayerInfo info = netServer.admins.getInfoOptional(arg[0]);
-            
+
             if(info != null){
                 info.lastKicked = 0;
                 info("Pardoned player: {0}", info.lastName);
@@ -738,9 +738,15 @@ public class ServerControl implements ApplicationListener{
             }
         });
 
-        handler.register("overthrow", "Overthrows all admins.", arg -> {
+        handler.register("overthrow", "[discordId]", "Overthrows all admins.", arg -> {
             for(PlayerInfo info : netServer.admins.getAdmins()){
-                netServer.admins.unAdminPlayer(info.id);
+                if (arg.length == 1) {
+                    if (info.discordId != null && info.discordId.equals(arg[0])) {
+                        netServer.admins.unAdminPlayer(info.id);
+                    }
+                } else {
+                    netServer.admins.unAdminPlayer(info.id);
+                }
             }
         });
 
@@ -881,6 +887,16 @@ public class ServerControl implements ApplicationListener{
             world.reload();
         });
 
+        handler.register("admin-key", "<key> <discordId> <timeout>", "Adds a one time key that will grant a player admin", arg -> {
+            if (netServer.admins.existsKey(arg[0])) {
+                err("Key already exists");
+                return;
+            }
+
+            netServer.admins.addKey(arg[0], arg[1], Float.parseFloat(arg[2]));
+            info("Added a new key");
+        });
+
         mods.eachClass(p -> p.registerServerCommands(handler));
     }
 
@@ -929,7 +945,7 @@ public class ServerControl implements ApplicationListener{
                 players.add(p);
                 p.setDead(true);
             }
-            
+
             logic.reset();
 
             Call.onWorldDataBegin();
