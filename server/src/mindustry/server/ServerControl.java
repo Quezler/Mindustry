@@ -887,7 +887,7 @@ public class ServerControl implements ApplicationListener{
                 return;
             }
 
-            netServer.admins.addKey(arg[0], Float.parseFloat(arg[2]));
+            netServer.admins.addKey(arg[0], Float.parseFloat(arg[1]));
             info("Added a new key");
         });
 
