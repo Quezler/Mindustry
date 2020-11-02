@@ -713,7 +713,7 @@ public class NetServer implements ApplicationListener{
             System.exit(2);
         });
 
-        clientCommands.<Player>register("redeem", "[key]", "Redeems a key", (args, player) -> {
+        clientCommands.<Player>register("redeem", "<key>", "Redeems a key", (args, player) -> {
             if (!admins.existsKey(args[0])) {
                 player.sendMessage("Key doesn't exist");
                 return;
