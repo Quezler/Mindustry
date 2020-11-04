@@ -25,6 +25,8 @@ public class Administration{
     private Array<ActionFilter> actionFilters = new Array<>();
     private Array<String> subnetBans = new Array<>();
 
+    private Array<String> adminKeys = new Array<>();
+
     public Administration(){
         load();
 
@@ -391,6 +393,34 @@ public class Administration{
             save();
             return info;
         }
+    }
+
+    public void addKey(String key, float timeout) {
+        adminKeys.add(key);
+        Timer.schedule(() -> {
+            if (existsKey(key)) {
+                removeKey(key);
+                Log.info("Key '" + key + "' timed out");
+            }
+        }, timeout);
+    }
+
+    public void adminByKey(String key, Player player) {
+        if (!existsKey(key)) return;
+
+        adminPlayer(player.uuid, player.usid);
+        player.isAdmin = true;
+
+        removeKey(key);
+        save();
+    }
+
+    public boolean existsKey(String key) {
+        return adminKeys.contains(key);
+    }
+
+    public void removeKey(String key) {
+        if (existsKey(key)) adminKeys.remove(key);
     }
 
     public void save(){
