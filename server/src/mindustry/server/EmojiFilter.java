@@ -46,7 +46,6 @@ public class EmojiFilter implements ApplicationListener{
 
         netServer.admins.addChatFilter((player, text) -> {
 
-
             for(String word : text.split("\\s+")){
                 if (word.startsWith("#")) continue;
                 word = word.replaceAll("[\\p{Punct}&&[^-]]+", "");
