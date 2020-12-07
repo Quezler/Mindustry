@@ -18,7 +18,7 @@ public class NileWater implements ApplicationListener{
         netServer.admins.addChatFilter((player, text) -> {
 
             if(Nydus.water_from_the_nile.active()){
-                if(text.contains("water from the nile")){
+                if(text.contains(" from the nile")){
                     for(int x = 0; x < world.width(); x++){
                         for(int y = 0; y < world.height(); y++){
                             Tile t = world.tile(x, y);
